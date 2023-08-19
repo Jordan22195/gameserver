@@ -70,3 +70,8 @@ int Entity::takeDamage(int amount)
     return ActionResult();
  }
 
+ void Entity::getStatus()
+ {
+    cout << name << " hp " << health << "/" << maxHealth << " | count " << count << "/" << maxCount;
+ }
+

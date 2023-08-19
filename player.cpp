@@ -99,3 +99,11 @@ void  Player::doEntityAction()
     
     }
 }
+
+void Player::getStatus()
+{
+    cout << name << " ";
+    if (entityTarget!= nullptr) entityTarget->getStatus();
+    else cout << "idle";
+
+}

@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra
+CXXFLAGS = -std=c++17
 
 # Source files
 SRCS = gameServer.cpp item.cpp inventory.cpp dropTable.cpp entity.cpp resourceEntity.cpp combatEntity.cpp \

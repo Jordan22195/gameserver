@@ -7,6 +7,7 @@
 #include <limits>
 #include <chrono>
 #include <thread>
+#include <string>
 
 #include "entity.h"
 #include "combatEntity.h"
@@ -25,6 +26,9 @@ class Zone
     static long long lastServerUpdate;
     void respawnEntites();
     void playerActions();
+
+    virtual string getZoneView();
+    
 
 };
 

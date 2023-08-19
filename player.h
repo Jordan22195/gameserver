@@ -43,7 +43,7 @@ class Player
     Inventory * getPlayerInventory();
     void update();
     void doEntityAction();
-
+    void getStatus();
    
 
 };

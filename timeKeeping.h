@@ -1,3 +1,6 @@
+#ifndef TIMEKEEPING
+#define TIMEKEEPING
+
 #include <chrono>
 
 class TimeKeeping
@@ -6,3 +9,5 @@ class TimeKeeping
     public:
     inline static long long lastServerTime;
 };
+
+#endif

@@ -14,6 +14,7 @@
 #include "timeKeeping.h"
 #include "craftingEntity.h"
 #include "zone.h"
+#include "player.h"
 
 
 using namespace std;
@@ -23,7 +24,33 @@ int main()
 
     Inventory inv;
 
-    printf("enter main\n");
+    string menu = "\n\n\n a:Add Player #:select player";
+
+    Zone1 zone;
+
+    Player * playerptr;
+
+    while(true)
+    {
+        system("clear");
+        zone.getZoneView();
+        cout << menu;
+        std::this_thread::sleep_for(std::chrono::milliseconds((500)));
+
+        string input;
+        cin >> input;
+        if (input == "a")
+        {
+            cout << "enter new player name" << endl;
+            string name;
+            cin >> name;
+            playerptr = new Player();
+            playerptr->name = name;
+            zone.players.push_back(playerptr);
+
+        }
+
+    }
 
 
 }

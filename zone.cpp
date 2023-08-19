@@ -1,6 +1,27 @@
 #include "zone.h"
 #include "player.h"
 
+using namespace std;
+
+string Zone::getZoneView()
+{
+    cout << "ENTITIES" << endl;
+    for ( auto e : entities)
+    {
+        e->getStatus();
+        cout << endl;
+    }
+    
+    cout << endl;
+
+    cout << "PLAYERS" << endl;
+    for (int i = 0; i < players.size(); i++)
+    {
+        cout << i << " ";
+        players[i]->getStatus();
+        cout << endl;
+    }
+}
 
 void Zone::respawnEntites()
 {
