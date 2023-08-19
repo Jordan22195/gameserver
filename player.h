@@ -31,6 +31,9 @@ class Player
 
     bool performingAction = false;
     bool stopAction = false;
+    int actionCounter;
+long long nextActionTime = -1; // numeric_limits<long long>::max();;
+
 
     Player();
     void setEntityTarget(Entity * entityRef);

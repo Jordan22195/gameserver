@@ -35,8 +35,11 @@ void Player::stopEntityAction()
 }
 void Player::startEntityAction()
 {
-    if(entityTarget == nullptr) return;
-    actionThread = thread(&Player::doEntityAction, this);
+    performingAction = true;
+    if (entityTarget == nullptr) return;
+    actionCounter = 0;
+
+    nextActionTime = TimeKeeping::lastServerTime + getActiveSkill()->actionInterval;
 }
 
 double Player::calcHitChance()
@@ -77,20 +80,21 @@ Inventory * Player::getPlayerInventory()
     return &bag;
 }
 
-long long nextActionTime = -1; // numeric_limits<long long>::max();;
 
 void  Player::update()
 {
     doEntityAction();
 }
-
 void  Player::doEntityAction()
 {
     auto skill = getActiveSkill();
+    cout << "time till action " << nextActionTime- TimeKeeping::lastServerTime << endl;
     if (performingAction && (TimeKeeping::lastServerTime >= nextActionTime))
     {
+
         if (skill->level >= entityTarget->levelRequirement)
         {
+            actionCounter ++;
             ActionResult res = entityTarget->action(calcHitChance(), calcMinHit(), calcMaxHit());
             skill->addXp(res.xp);
             bag.addItems(res.items);
@@ -102,8 +106,15 @@ void  Player::doEntityAction()
 
 void Player::getStatus()
 {
-    cout << name << " ";
-    if (entityTarget!= nullptr) entityTarget->getStatus();
+    cout << name << " Skill: ";
+    if(getActiveSkill()!= nullptr)
+    {
+        cout << getActiveSkill()->name << " xp " << getActiveSkill()->xp << " level: " << getActiveSkill()->level;
+    } 
+    if (entityTarget!= nullptr) { cout << "Target: ";
+     entityTarget->getStatus();
+     cout << " Actions: " << actionCounter << endl;}
     else cout << "idle";
 
 }
+

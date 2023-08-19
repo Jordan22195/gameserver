@@ -24,31 +24,21 @@ int main()
 
     Inventory inv;
 
-    string menu = "\n\n\n a:Add Player #:select player";
 
     Zone1 zone;
 
     Player * playerptr;
+    playerptr = new Player();
+    playerptr->name = "cobek";
+    playerptr->setEntityTarget(zone.entities[0]);
+    zone.players.push_back(playerptr);
+    playerptr->startEntityAction();
 
     while(true)
     {
         system("clear");
         zone.getZoneView();
-        cout << menu;
         std::this_thread::sleep_for(std::chrono::milliseconds((500)));
-
-        string input;
-        cin >> input;
-        if (input == "a")
-        {
-            cout << "enter new player name" << endl;
-            string name;
-            cin >> name;
-            playerptr = new Player();
-            playerptr->name = name;
-            zone.players.push_back(playerptr);
-
-        }
 
     }
 
