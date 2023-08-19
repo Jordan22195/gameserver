@@ -91,7 +91,7 @@ void  Player::doEntityAction()
     {
         if (skill->level >= entityTarget->levelRequirement)
         {
-            ActionResult res = entityTarget->action();
+            ActionResult res = entityTarget->action(calcHitChance(), calcMinHit(), calcMaxHit());
             skill->addXp(res.xp);
             bag.addItems(res.items);
             nextActionTime = TimeKeeping::lastServerTime + skill->actionInterval;

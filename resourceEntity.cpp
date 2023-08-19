@@ -1,11 +1,8 @@
 #include "resourceEntity.h"
 
-    ActionResult ResourceEntity::action()
+    ActionResult ResourceEntity::action(double hitChance, int minHit, int maxHit)
     {
         lock_guard<std::mutex> lock(mtx);
-        double hitChance;
-         int minHit;
-          int maxHit;
         ActionResult r;
         int d = takeDamage(calcDamage(hitChance, minHit, maxHit));
         if ( d > 0)

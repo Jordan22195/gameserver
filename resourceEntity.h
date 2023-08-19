@@ -9,7 +9,7 @@ class ResourceEntity : public Entity
 {
     public:
    
-    ActionResult action() override;
+    ActionResult action(double hitChance, int minHit, int maxHit) override;
 
 };
 

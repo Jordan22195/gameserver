@@ -5,8 +5,8 @@ class craftingEntity : public Entity
     public:
     vector<Item> craftingInput;
     double actionInterval_ms;
-    bool requiredItemsAvailable();
-    ActionResult action();
+    bool requiredItemsAvailable(Inventory * bag);
+    ActionResult action(Inventory * bag);
 };
 
 class arrowShaftCraftingEntity : public craftingEntity

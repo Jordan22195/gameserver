@@ -16,7 +16,7 @@ class combatEntity : public Entity
     }
 
     
-    ActionResult action() override; //double hitChance, int minHit, int maxHit) override;
+    ActionResult action(double hitChance, int minHit, int maxHit) override; //double hitChance, int minHit, int maxHit) override;
 
 
 };

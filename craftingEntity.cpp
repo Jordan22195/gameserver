@@ -1,13 +1,11 @@
 
 #include "craftingEntity.h"
-bool craftingEntity::requiredItemsAvailable(){return true;}
-ActionResult craftingEntity::action(){return ActionResult();}
-/*
-    bool craftingEntity::requiredItemsAvailable()
+
+    bool craftingEntity::requiredItemsAvailable(Inventory * bag)
     {
         for (auto &i : craftingInput)
         {
-            auto playerItem = playerBag->get(i);
+            auto playerItem = bag->get(i);
             if(playerItem == nullptr)
             {
                 return false;
@@ -20,16 +18,16 @@ ActionResult craftingEntity::action(){return ActionResult();}
         return true;
     }
 
-    ActionResult craftingEntity::action()
+    ActionResult craftingEntity::action(Inventory * bag)
     {
-        if(!requiredItemsAvailable(playerRef->getPlayerInventory()))
+        if(!requiredItemsAvailable(bag))
         {
             return ActionResult();
         }
         
         for (auto & i : craftingInput)
         {
-            playerRef->getPlayerInventory()->removeItem(i);
+           bag->removeItem(i);
         }
         ActionResult r;
         r.xp = xpValue;
@@ -37,4 +35,4 @@ ActionResult craftingEntity::action(){return ActionResult();}
         
     }
 
-    */
+    

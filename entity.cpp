@@ -65,8 +65,8 @@ int Entity::takeDamage(int amount)
     }
 }
 
-ActionResult Entity::action()
-{
-    lock_guard<std::mutex> lock(mtx);
+ ActionResult Entity::action(double hitChance, int minHit, int maxHit)
+ {
     return ActionResult();
-}
+ }
+

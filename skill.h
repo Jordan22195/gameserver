@@ -5,7 +5,6 @@
 #include <chrono>
 #include <thread>
 
-#include "actionResult.h"
 #include "inventory.h"
 
 using namespace std;
@@ -101,51 +100,8 @@ class StrengthSkill : public Skill
     }
 };
 
-struct craftingAction
-{
-    craftingAction(Item input, Item output, int xpVal, int levelReq, int executionTime_ms, double difficulty)
-    {
-        inputItem = input;
-        outputItem = output;
-        xp = xpVal;
-        levelRequirement = levelReq;
-        actionExecutionTime_ms = executionTime_ms;
-        this->difficulty = difficulty;
-    }
-    Item inputItem;
-    Item outputItem;
-    int xp;
-    int levelRequirement;
-    int actionExecutionTime_ms;
-    double difficulty;
-    bool stopAction = false;
-
-    bool performingAction = false;
-
-
-
-    void doAction(Inventory * playerBag)
-    {
-        ActionResult r;
-        performingAction = true;
-        stopAction = false;
-        while (performingAction)
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds((int)(actionExecutionTime_ms)));
-            if(stopAction)
-            {
-                performingAction = false;
-                return;
-            }
-            ActionResult res;
-        }
-    }
-
-};
-
 class FletchingSkill : public Skill
 {
-    vector<craftingAction> craftingActions;
 
     FletchingSkill()
     {
@@ -153,7 +109,6 @@ class FletchingSkill : public Skill
         xp = 0;
         level = 1;
         type = FLETCHING;
-        craftingActions.push_back(craftingAction(RegularLogsItem(1), ArrowShaftsItem(5), 10, 1, 2000, 1.0));
     }
 
     void doCraftingAction()

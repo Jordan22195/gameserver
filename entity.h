@@ -17,9 +17,11 @@
 
 using namespace std;
 
-
-
-
+struct ActionResult
+{
+    vector<Item> items;
+    int xp = 0;
+};
 
 
 class Entity
@@ -44,7 +46,8 @@ class Entity
     void id();
     int calcDamage(double hitChance, int minHit, int maxHit);
     int takeDamage(int amount);
-    virtual ActionResult action();// (Player * playerRef);
+
+    virtual ActionResult action(double hitChance, int minHit, int maxHit);
 
     protected:
     mutex mtx;
