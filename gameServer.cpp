@@ -15,6 +15,7 @@
 #include "craftingEntity.h"
 #include "zone.h"
 #include "player.h"
+#include "databaseInterface.h"
 
 
 using namespace std;
@@ -34,10 +35,12 @@ int main()
     zone.players.push_back(playerptr);
     playerptr->startEntityAction();
 
+    DBInterface::login();
+
     while(true)
     {
-        system("clear");
-        zone.getZoneView();
+        //system("clear");
+        //zone.getZoneView();
         std::this_thread::sleep_for(std::chrono::milliseconds((500)));
 
     }

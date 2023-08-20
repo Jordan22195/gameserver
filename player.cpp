@@ -88,7 +88,7 @@ void  Player::update()
 void  Player::doEntityAction()
 {
     auto skill = getActiveSkill();
-    cout << "time till action " << nextActionTime- TimeKeeping::lastServerTime << endl;
+    //cout << "time till action " << nextActionTime- TimeKeeping::lastServerTime << endl;
     if (performingAction && (TimeKeeping::lastServerTime >= nextActionTime))
     {
 

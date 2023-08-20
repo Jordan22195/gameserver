@@ -56,7 +56,7 @@ int Entity::takeDamage(int amount)
             health = maxHealth;
             count --;
         }
-        cout << name << " hp " << health << "/" << maxHealth << " | count " << count << "/" << maxCount << endl;
+        //cout << name << " hp " << health << "/" << maxHealth << " | count " << count << "/" << maxCount << endl;
         return amount;
     }
     else

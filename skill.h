@@ -48,7 +48,6 @@ class Skill
     void addXp(int newXp)
     {
         this->xp += newXp;
-        cout << this->xp << endl;
         while (xp >= xpLevelThreasholds[level])
         {
             levelUp();
