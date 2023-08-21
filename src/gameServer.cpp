@@ -35,7 +35,7 @@ int main()
     zone.players.push_back(playerptr);
     playerptr->startEntityAction();
 
-    DBInterface::login();
+    DBInterface::go();
 
     while(true)
     {
