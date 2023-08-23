@@ -143,10 +143,11 @@ bool updatePlayerItem(const Aws::String &tableName,
                                   const Aws::String &partitionKey,
                                   const Aws::String &partitionValue,
                                   const Aws::String &attributeKey,
-                                  const Aws::String &attributeValue,
+                                  const Aws::String attributeValue_,
                                   const Aws::Client::ClientConfiguration &clientConfiguration) {
     Aws::DynamoDB::DynamoDBClient dynamoClient(clientConfiguration);
 
+    cout << "update player item" << endl;
     // *** Define UpdateItem request arguments.
     // Define TableName argument.
     Aws::DynamoDB::Model::UpdateItemRequest request;
@@ -168,10 +169,12 @@ bool updatePlayerItem(const Aws::String &tableName,
 
     // Construct attribute value argument.
     Aws::DynamoDB::Model::AttributeValue attributeUpdatedValue;
-    attributeUpdatedValue.SetS(attributeValue);
+    attributeUpdatedValue.SetS(attributeValue_);
     Aws::Map<Aws::String, Aws::DynamoDB::Model::AttributeValue> expressionAttributeValues;
     expressionAttributeValues[":valueA"] = attributeUpdatedValue;
     request.SetExpressionAttributeValues(expressionAttributeValues);
+
+    cout << request.SerializePayload() << endl;
 
     // Update the item.
     const Aws::DynamoDB::Model::UpdateItemOutcome &outcome = dynamoClient.UpdateItem(

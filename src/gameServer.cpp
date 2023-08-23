@@ -37,7 +37,20 @@ int main()
 
     auto clientconfig = DBInterface::go();
 
-    DBInterface::putPlayerItem("Players", "1", "cobek", clientconfig);
+   // DBInterface::putPlayerItem("Players", "1", "cobek", clientconfig);
+
+        const Aws::String tableName("game-table");
+        const Aws::String partitionKey("players");
+        const Aws::String partitionValue("0");
+        const Aws::String attributeKey("WoodcuttingXp");
+        const Aws::String attributeValue("1");
+
+
+
+
+    DBInterface::updatePlayerItem(tableName, partitionKey, partitionValue,
+                                     attributeKey,
+                                     attributeValue, clientconfig);
 
     while(true)
     {
