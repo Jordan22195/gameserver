@@ -35,7 +35,9 @@ int main()
     zone.players.push_back(playerptr);
     playerptr->startEntityAction();
 
-    DBInterface::go();
+    auto clientconfig = DBInterface::go();
+
+    DBInterface::putPlayerItem("Players", "1", "cobek", clientconfig);
 
     while(true)
     {
