@@ -22,8 +22,9 @@ class Player
 {
 
     public:
+    Player(string playerID);
     string name;
-    map<SKILL_TYPE, Skill> skills;
+    map<SKILL_TYPE, Skill*> skills;
     Entity * entityTarget;
     Inventory bag;
 

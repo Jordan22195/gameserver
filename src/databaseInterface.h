@@ -1,3 +1,6 @@
+#ifndef DBINTERFACE 
+#define DBINTERFACE
+
 /*
    Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
    SPDX-License-Identifier: Apache-2.0
@@ -33,24 +36,26 @@
  *  Usage: 'hello_dynamodb'
  *
  */
+namespace{
+
 class DBInterface
 {
     public: 
 
+        
 
 
-static Aws::Client::ClientConfiguration go() {
+static void  go() {
     Aws::SDKOptions options;
     // Optionally change the log level for debugging.
 //   options.loggingOptions.logLevel = Utils::Logging::LogLevel::Debug;
     Aws::InitAPI(options); // Should only be called once.
-        Aws::Client::ClientConfiguration clientConfig;
 
     int result = 0;
     {
         // Optional: Set to the AWS Region (overrides config file).
         // clientConfig.region = "us-east-1";
-
+        Aws::Client::ClientConfiguration clientConfig;
         Aws::DynamoDB::DynamoDBClient dynamodbClient(clientConfig);
         Aws::DynamoDB::Model::ListTablesRequest listTablesRequest;
         listTablesRequest.SetLimit(50);
@@ -75,7 +80,6 @@ static Aws::Client::ClientConfiguration go() {
 
 
     //Aws::ShutdownAPI(options); // Should only be called once.
-    return clientConfig;
 }
 
 //! Put an item in an Amazon DynamoDB table.
@@ -95,8 +99,8 @@ static Aws::Client::ClientConfiguration go() {
  */
 static bool putPlayerItem(const Aws::String &tableName,
                                const Aws::String &playerUniqueID,
-                               const Aws::String &playerName,
-                               Aws::Client::ClientConfiguration clientConfig) {
+                               const Aws::String &playerName) {
+    Aws::Client::ClientConfiguration clientConfig;
     Aws::DynamoDB::DynamoDBClient dynamoClient(clientConfig);
 
     Aws::DynamoDB::Model::PutItemRequest putItemRequest;
@@ -128,7 +132,6 @@ static //! Update an Amazon DynamoDB table item.
   \param partitionValue: The value for the partition key.
   \param attributeKey: The key for the attribute to be updated.
   \param attributeValue: The value for the attribute to be updated.
-  \param clientConfiguration: AWS client configuration.
   \return bool: Function succeeded.
   */
 
@@ -143,9 +146,9 @@ bool updatePlayerItem(const Aws::String &tableName,
                                   const Aws::String &partitionKey,
                                   const Aws::String &partitionValue,
                                   const Aws::String &attributeKey,
-                                  const Aws::String attributeValue_,
-                                  const Aws::Client::ClientConfiguration &clientConfiguration) {
-    Aws::DynamoDB::DynamoDBClient dynamoClient(clientConfiguration);
+                                  const Aws::String attributeValue_) {
+     Aws::Client::ClientConfiguration clientConfig;
+    Aws::DynamoDB::DynamoDBClient dynamoClient(clientConfig);
 
     cout << "update player item" << endl;
     // *** Define UpdateItem request arguments.
@@ -191,4 +194,7 @@ bool updatePlayerItem(const Aws::String &tableName,
 
 
 };
+
 // snippet-end:[cpp.example_code.dynamodb.hello_dynamodb]
+}
+#endif

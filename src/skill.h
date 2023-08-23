@@ -4,8 +4,10 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <string>
 
 #include "inventory.h"
+#include "databaseInterface.h"
 
 using namespace std;
 
@@ -22,6 +24,12 @@ class Skill
 {
 
     public:
+
+    string playerUniqueID;
+    Skill(string playerId)
+    {
+        playerUniqueID =playerId;
+    }
     int xpLevelThreasholds [99] = {
         0, 
         100,
@@ -48,6 +56,7 @@ class Skill
     void addXp(int newXp)
     {
         this->xp += newXp;
+        DBInterface::updatePlayerItem("Players-Table", "PlayerID", playerUniqueID, this->name, to_string(this->xp));
         while (xp >= xpLevelThreasholds[level])
         {
             levelUp();
@@ -65,7 +74,7 @@ class Skill
 class WoodCuttingSkill : public Skill
 {
     public:
-    WoodCuttingSkill()
+    WoodCuttingSkill(string playerId) : Skill(playerId)
     {
         name = "Woodcutting";
         xp = 0;
@@ -78,7 +87,7 @@ class WoodCuttingSkill : public Skill
 class AttackSkill : public Skill
 {
     public:
-    AttackSkill()
+    AttackSkill(string playerId) : Skill(playerId)
     {
         name = "Attack";
         xp = 0;
@@ -90,7 +99,7 @@ class AttackSkill : public Skill
 class StrengthSkill : public Skill
 {
     public:
-    StrengthSkill()
+    StrengthSkill(string playerId) : Skill(playerId)
     {
         name = "Strength";
         xp = 0;
@@ -102,7 +111,7 @@ class StrengthSkill : public Skill
 class FletchingSkill : public Skill
 {
 
-    FletchingSkill()
+    FletchingSkill(string playerId) : Skill(playerId)
     {
         name = "Fletching";
         xp = 0;

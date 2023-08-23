@@ -1,10 +1,12 @@
 #include "player.h"
 
-Player::Player()
+
+Player::Player(string playerId)
 {
-    skills[WOODCUTTING] = WoodCuttingSkill();
-    skills[ATTACK] = AttackSkill();
-    skills[STRENGTH] = StrengthSkill();
+    name = playerId;
+    skills[WOODCUTTING] = new WoodCuttingSkill(playerId);
+    skills[ATTACK] = new AttackSkill(playerId);
+    skills[STRENGTH] = new StrengthSkill(playerId);
 }
 
 void Player::setEntityTarget(Entity * entityRef)
@@ -19,9 +21,9 @@ Skill * Player::getActiveSkill()
     {
         if(entityTarget->skillType == MELEE_COMBAT)
         {
-            return  &skills[ATTACK];
+            return  skills[ATTACK];
         }
-        return &skills[entityTarget->skillType];
+        return skills[entityTarget->skillType];
     }
     return nullptr;
 }
@@ -69,7 +71,7 @@ int Player::calcMaxHit()
         }
         else
         {
-            return skills[STRENGTH].level;
+            return skills[STRENGTH]->level;
         }
     }
     return 0;

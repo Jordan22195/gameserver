@@ -23,19 +23,21 @@ using namespace std;
 int main() 
 {
 
+    cout << "main" << endl;
     Inventory inv;
 
 
     Zone1 zone;
-
+    DBInterface::go();
+    cout << "db go" << endl;
     Player * playerptr;
-    playerptr = new Player();
-    playerptr->name = "cobek";
+    playerptr = new Player("cobek");
+    cout << "new player" << endl;
     playerptr->setEntityTarget(zone.entities[0]);
     zone.players.push_back(playerptr);
+    cout << "add to zone"<< endl;
     playerptr->startEntityAction();
-
-    auto clientconfig = DBInterface::go();
+    cout << "start action" << endl;
 
    // DBInterface::putPlayerItem("Players", "1", "cobek", clientconfig);
 
@@ -48,9 +50,9 @@ int main()
 
 
 
-    DBInterface::updatePlayerItem(tableName, partitionKey, partitionValue,
-                                     attributeKey,
-                                     attributeValue, clientconfig);
+   // DBInterface::updatePlayerItem(tableName, partitionKey, partitionValue,
+   //                                  attributeKey,
+   //                                  attributeValue, clientconfig);
 
     while(true)
     {
