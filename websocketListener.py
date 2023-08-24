@@ -8,15 +8,19 @@ import websockets
 import time
 
 # IPC message queue
-ipc_queue = multiprocessing.Queue()
 
 
 async def send_message(websocket):
+    global ipc_queue
     while True:
-        #global ipc_queue
-        message = "message"#ipc_queue.get()
-        await websocket.send(message)
-        print(f"Sent: {message}")
+        
+        print("ipc get")
+        with open('pipe1') as f:   # add `rb` for binary mode
+            # line-by-line read
+            for line in f:
+                print(line)
+                await websocket.send(line)
+                print(f"Sent: {line}")
         time.sleep(1)
 
 async def receive_message(websocket):
@@ -26,6 +30,7 @@ async def receive_message(websocket):
 
 # WebSocket server
 async def websocket_server(websocket, path):
+    print("go")
     await asyncio.gather(
         send_message(websocket),
         receive_message(websocket)

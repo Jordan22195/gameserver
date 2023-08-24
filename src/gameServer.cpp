@@ -1,9 +1,12 @@
 #include <iostream>
+#include <fstream>
 #include <curl/curl.h> // You might need to install a library to handle HTTP requests, like libcurl.
 #include <string>
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <cstring>
+#include <cstdlib>
 
 #include "item.h"
 #include "inventory.h"
@@ -20,10 +23,29 @@
 
 using namespace std;
 
+int IPCTest() {
+
+    auto pipe = fstream("../pipe1");
+    pipe << "from game server" << endl;
+
+    return 0;
+
+}
+
+
+
+
+
+
 int main() 
 {
 
     cout << "main" << endl;
+
+    IPCTest();
+
+    return 0;
+
     Inventory inv;
 
 
