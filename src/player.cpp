@@ -1,5 +1,7 @@
 #include "player.h"
-
+#include <cstring>
+#include <fstream>
+#include <iostream>
 
 Player::Player(string playerId)
 {
@@ -98,6 +100,7 @@ void  Player::doEntityAction()
         {
             actionCounter ++;
             ActionResult res = entityTarget->action(calcHitChance(), calcMinHit(), calcMaxHit());
+            reportActionResults(res);
             skill->addXp(res.xp);
             bag.addItems(res.items);
             nextActionTime = TimeKeeping::lastServerTime + skill->actionInterval;
@@ -120,3 +123,16 @@ void Player::getStatus()
 
 }
 
+void Player::reportActionResults(ActionResult res)
+{
+    string s = name + "\n";
+     std::ofstream fs("../pipe1");
+    fs << name << endl;
+    fs << "Action Result " << res.xp; 
+    for (Item &i : res.items)
+    {
+        fs << " " << i.name << " " << i.quantity;
+    }
+    fs << entityTarget->getStatus();
+    fs << endl;
+}

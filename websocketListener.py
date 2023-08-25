@@ -18,16 +18,26 @@ def pipe_input():
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     while True:
-        for websocket in connected_clients:
-            print("socket")
-            with open('pipe1') as f:   # add `rb` for binary mode
-                print("open pipe")
-                # line-by-line read
-                for line in f:
-                    print ("read line")
-                    print(line)
-                    loop.run_until_complete(send_message(websocket, line))
-                    print(f"Sent: {line}")
+
+        print("open pipe")
+        # line-by-line read
+        with open('pipe1') as f:   # add `rb` for binary mode
+            for charname in f:
+                print ("read name")
+                charname = charname.strip()
+                print(charname)
+                message = f.readline()
+                print(message)
+                print({connected_clients.get(charname.strip(), "-1")})
+                if(connected_clients.get(charname, "")!= ""):  
+                    
+ 
+                    loop.run_until_complete(send_message(connected_clients.get(charname, ""), message))
+                    print(f"Sent: {message} to: {charname}")
+                else:
+                    print("client not found")
+
+
         print("sleep")
         time.sleep(1)
         
@@ -40,11 +50,12 @@ async def send_message(websocket, message):
 
 async def client_handler(websocket, path):
     # Add client to dictionary
-    connected_clients[websocket] = path
+    
     print(f"Client connected: {path}")
     try:
         async for message in websocket:
-            print(f"Received from {path}: {message}")
+            connected_clients[message.strip()] = websocket
+            print(f"Received from {message}: {websocket}")
             
             # Echo the message back to the client
             await websocket.send(f"You said: {message}")

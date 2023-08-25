@@ -42,9 +42,8 @@ int main()
 
     cout << "main" << endl;
 
-    IPCTest();
 
-    return 0;
+
 
     Inventory inv;
 

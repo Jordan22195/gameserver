@@ -48,7 +48,7 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
     void update();
     void doEntityAction();
     void getStatus();
-   
+    void reportActionResults(ActionResult res);
 
 };
 

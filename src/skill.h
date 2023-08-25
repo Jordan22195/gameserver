@@ -56,7 +56,7 @@ class Skill
     void addXp(int newXp)
     {
         this->xp += newXp;
-        DBInterface::updatePlayerItem("Players-Table", "PlayerID", playerUniqueID, this->name, to_string(this->xp));
+        //DBInterface::updatePlayerItem("Players-Table", "PlayerID", playerUniqueID, this->name, to_string(this->xp));
         while (xp >= xpLevelThreasholds[level])
         {
             levelUp();

@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "timeKeeping.h"
+#include <sstream>
 
 long long Entity::getNextRespawnTime()
 {
@@ -70,8 +71,10 @@ int Entity::takeDamage(int amount)
     return ActionResult();
  }
 
- void Entity::getStatus()
+ string Entity::getStatus()
  {
-    cout << name << " hp " << health << "/" << maxHealth << " | count " << count << "/" << maxCount;
+    stringstream ss;
+    ss << " Entity " << name << " hp " << health << "/" << maxHealth << " | count " << count << "/" << maxCount;
+    return ss.str();
  }
 

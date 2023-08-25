@@ -41,7 +41,7 @@ class Entity
 
     queue<long long> respawnTimes;
 
-    virtual void getStatus();
+    virtual string getStatus();
 
     long long getNextRespawnTime();
     void respawn();
