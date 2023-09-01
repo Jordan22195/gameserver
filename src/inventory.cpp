@@ -1,5 +1,5 @@
 #include "inventory.h"
-
+#include <sstream>
 
 using namespace std;
 
@@ -51,4 +51,16 @@ void Inventory::showInventory() {
     {
         cout << it->first << " x" << it->second.quantity << endl;
     }
+}
+
+string Inventory::packetify()
+{
+    Logger::TRACE("string Inventory::packetify()  %p", this);
+    stringstream ss;
+    ss << items.size() << endl;
+    for (auto it = items.begin(); it != items.end() ; ++it)
+    {
+        ss << it->first << endl << it->second.quantity << endl;
+    }
+    return ss.str();
 }

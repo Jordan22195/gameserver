@@ -10,6 +10,7 @@
 #include <mutex>
 #include <queue>
 #include <memory>
+#include <sstream>
 
 #include "item.h"
 #include "skill.h"
@@ -45,11 +46,23 @@ class Entity
 
     long long getNextRespawnTime();
     void respawn();
-    void id();
+    virtual string id();
     int calcDamage(double hitChance, int minHit, int maxHit);
     int takeDamage(int amount);
 
     virtual ActionResult action(double hitChance, int minHit, int maxHit);
+
+    virtual string packetify()
+    {
+        stringstream ss;
+        ss << name << endl;
+        ss << skillType << endl;
+        ss << health << endl;
+        ss << maxHealth << endl;
+        ss << count << endl;
+        ss << maxCount << endl;
+        return ss.str();
+    }
 
     protected:
     mutex mtx;

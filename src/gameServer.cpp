@@ -7,32 +7,16 @@
 #include <vector>
 #include <cstring>
 #include <cstdlib>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+#include <cstddef>
 
-#include "item.h"
-#include "inventory.h"
-#include "dropTable.h"
-#include "entity.h"
-#include "resourceEntity.h"
-#include "combatEntity.h"
-#include "timeKeeping.h"
-#include "craftingEntity.h"
+#include "websocketInterface.h"
 #include "zone.h"
-#include "player.h"
-#include "databaseInterface.h"
-
+#include "commandHandler.h"
+#include "logger.h"
 
 using namespace std;
-
-int IPCTest() {
-
-    auto pipe = fstream("../pipe1");
-    pipe << "from game server" << endl;
-
-    return 0;
-
-}
-
-
 
 
 
@@ -40,34 +24,23 @@ int IPCTest() {
 int main() 
 {
 
-    cout << "main" << endl;
-
-
-
-
-    Inventory inv;
-
-
+    Logger::setLogLevel(Logger::LogLevel::TRACE);
     Zone1 zone;
-    DBInterface::go();
-    cout << "db go" << endl;
-    Player * playerptr;
-    playerptr = new Player("cobek");
-    cout << "new player" << endl;
-    playerptr->setEntityTarget(zone.entities[0]);
-    zone.players.push_back(playerptr);
-    cout << "add to zone"<< endl;
-    playerptr->startEntityAction();
-    cout << "start action" << endl;
 
+    WebsocketInterface clientInterface;
+
+    CommandHander commandHandler;
+    commandHandler.zone = &zone;
+
+
+  //  DBInterface::go();
    // DBInterface::putPlayerItem("Players", "1", "cobek", clientconfig);
 
-        const Aws::String tableName("game-table");
-        const Aws::String partitionKey("players");
-        const Aws::String partitionValue("0");
-        const Aws::String attributeKey("WoodcuttingXp");
-        const Aws::String attributeValue("1");
-
+//    const Aws::String tableName("game-table");
+//    const Aws::String partitionKey("players");
+//    const Aws::String partitionValue("0");
+//    const Aws::String attributeKey("WoodcuttingXp");
+//    const Aws::String attributeValue("1");
 
 
 
@@ -77,11 +50,21 @@ int main()
 
     while(true)
     {
-        //system("clear");
-        //zone.getZoneView();
-        std::this_thread::sleep_for(std::chrono::milliseconds((500)));
+        std::this_thread::sleep_for(std::chrono::milliseconds((50)));
+
+       string clientRequest =  clientInterface.recieveServerMessage();
+        if(clientRequest == "") continue;
+
+       commandResponse response = commandHandler.clientActionRequestHandler(clientRequest);
+        if(response.name != "")
+        {
+            clientInterface.sendServerMessage(response.name, response.data);
+        }
+
+
 
     }
+    return 0;
 
 
 }

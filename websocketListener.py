@@ -7,40 +7,72 @@ import sys
 import websockets
 import time
 import threading
+import socket
+
 from asyncio.events import AbstractEventLoop
 
 # Dictionary to store connected clients
 connected_clients = {}
+toServerFifo = 0
+fromServerFifo = 0
 
 
-def pipe_input():
-    print("enter send")
+
+def receive_udp_from_gameServer_and_forward_to_client():
+    print("try bind")
+    sockfd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sockfd.bind(("0.0.0.0", 50005))
+   # rxSocketAddress = ('0.0.0.0', 50005)
+    print("bind success")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     while True:
-
-        print("open pipe")
-        # line-by-line read
-        with open('pipe1') as f:   # add `rb` for binary mode
-            for charname in f:
-                print ("read name")
-                charname = charname.strip()
-                print(charname)
-                message = f.readline()
-                print(message)
-                print({connected_clients.get(charname.strip(), "-1")})
-                if(connected_clients.get(charname, "")!= ""):  
-                    
- 
-                    loop.run_until_complete(send_message(connected_clients.get(charname, ""), message))
-                    print(f"Sent: {message} to: {charname}")
-                else:
-                    print("client not found")
-
-
-        print("sleep")
-        time.sleep(1)
         
+        print("wating for message from gameserver")
+        #get payload size
+        sizeBuff, rxSocketAddress = sockfd.recvfrom(4, socket.MSG_PEEK)
+        bufferSize = int.from_bytes(sizeBuff, "little")
+        if (bufferSize <= 0):
+            continue
+        bufferSize = bufferSize + 4
+        print(f'bufferSize: {bufferSize}')
+        dataBuff, rxSocketAddress = sockfd.recvfrom(bufferSize)
+        print(dataBuff)
+        received_message = dataBuff[4:].decode()
+        print(f"Received string from gameServer: {received_message}")
+        print(f"Received data from gameServer: {dataBuff[4:]}")
+        print(f"data len: {len(dataBuff)}")
+
+        clientName = get_nth_item(received_message, 0)
+        if(connected_clients.get(clientName, "")!= ""): 
+            loop.run_until_complete(send_message(connected_clients.get(clientName, ""), received_message))
+            print(f"Sent gameServer packet to client: {clientName}")
+        else:
+            print(f'Error client {clientName} not found')
+
+
+
+def send_udp_to_gameServer(message):
+    txSocketAddress = ('0.0.0.0', 50004)
+    sockfd = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    header = len(message.encode()).to_bytes(4, 'little')
+    payload = message.encode()
+    dataPacket = header + payload
+    sockfd.sendto(bytes(dataPacket), txSocketAddress)
+    print(f'sent {dataPacket}')
+
+
+
+
+def get_nth_item(input_string, n):
+    items = input_string.strip().split('\n')
+    if n >= 0 and n < len(items):
+        return items[n].strip()
+    else:
+        return None
+
+
+    
 
 async def send_message(websocket, message):
         print ('wait tx')
@@ -54,11 +86,15 @@ async def client_handler(websocket, path):
     print(f"Client connected: {path}")
     try:
         async for message in websocket:
-            connected_clients[message.strip()] = websocket
-            print(f"Received from {message}: {websocket}")
+            clientName = get_nth_item(message, 0)
+            command = get_nth_item(message, 1)
+            if(command == "LOGIN"):
+                connected_clients[clientName] = websocket
+                print(f"login from {clientName}")
             
-            # Echo the message back to the client
-            await websocket.send(f"You said: {message}")
+            if(clientName in connected_clients):
+                print("send to server")
+                send_udp_to_gameServer(message)
 
     except websockets.exceptions.ConnectionClosed:
         pass
@@ -71,16 +107,16 @@ async def client_handler(websocket, path):
 
 async def main(func1):
     await asyncio.gather(func1)
+    
 
 if __name__ == "__main__":
 
-   
 
     # Start WebSocket server
     start_server = websockets.serve(client_handler, "0.0.0.0", 12345)
 
     try:
-        t1 = threading.Thread(target=pipe_input)
+        t1 = threading.Thread(target=receive_udp_from_gameServer_and_forward_to_client)
         t1.start()
         #asyncio.get_event_loop().run_until_complete(main(send_message()))
         #asyncio.get_event_loop().create_task(send_message())

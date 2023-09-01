@@ -5,8 +5,10 @@
 #include <map>
 #include <vector>
 #include <iostream>
+#include <string>
 
 #include "item.h"
+#include "logger.h"
 
 
 class Inventory
@@ -19,7 +21,7 @@ class Inventory
     Item * get(Item i);
     void removeItem(Item i); 
     void showInventory(); 
-
+    string packetify();
     private:
     map<string, Item> items;
 

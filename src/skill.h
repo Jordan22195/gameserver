@@ -8,6 +8,7 @@
 
 #include "inventory.h"
 #include "databaseInterface.h"
+#include "logger.h"
 
 using namespace std;
 
@@ -28,6 +29,7 @@ class Skill
     string playerUniqueID;
     Skill(string playerId)
     {
+        Logger::TRACE("Skill(string playerId)  %p", this);
         playerUniqueID =playerId;
     }
     int xpLevelThreasholds [99] = {

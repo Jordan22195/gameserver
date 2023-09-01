@@ -1,10 +1,13 @@
 #include "player.h"
+#include "logger.h"
+
 #include <cstring>
 #include <fstream>
 #include <iostream>
 
 Player::Player(string playerId)
 {
+    Logger::TRACE("Player::Player(string playerId) %p", this);
     name = playerId;
     skills[WOODCUTTING] = new WoodCuttingSkill(playerId);
     skills[ATTACK] = new AttackSkill(playerId);
@@ -13,12 +16,14 @@ Player::Player(string playerId)
 
 void Player::setEntityTarget(Entity * entityRef)
 {
+    Logger::TRACE("Player::setEntityTarget(Entity * entityRef) %p", this);
     stopEntityAction();
     entityTarget = entityRef;
 }
 
 Skill * Player::getActiveSkill()
 {
+    Logger::TRACE("Skill * Player::getActiveSkill() %p", this);
     if(entityTarget != nullptr)
     {
         if(entityTarget->skillType == MELEE_COMBAT)
@@ -32,6 +37,7 @@ Skill * Player::getActiveSkill()
 
 void Player::stopEntityAction()
 {
+    Logger::TRACE("void Player::stopEntityAction() %p", this);
     stopAction = true;
     if (actionThread.joinable()) {
         actionThread.join();
@@ -39,6 +45,7 @@ void Player::stopEntityAction()
 }
 void Player::startEntityAction()
 {
+     Logger::TRACE("void Player::startEntityAction() %p", this);
     performingAction = true;
     if (entityTarget == nullptr) return;
     actionCounter = 0;

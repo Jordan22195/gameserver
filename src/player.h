@@ -50,6 +50,21 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
     void getStatus();
     void reportActionResults(ActionResult res);
 
+    virtual string packetify()
+    {
+        Logger::TRACE("virtual string Player:packetify()  %p", this);
+        stringstream ss;
+
+        ss << name;
+        ss << skills.size() << endl;
+        for (auto &s : skills)
+        {
+            ss << s.first << endl << s.second->xp << endl;
+        }
+        ss << bag.packetify();
+        return ss.str();
+    }
+
 };
 
 #endif

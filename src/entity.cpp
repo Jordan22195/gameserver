@@ -25,8 +25,8 @@ void Entity::respawn()
     }
 }
 
-void Entity::id(){
-
+string Entity::id(){
+    return name;
 }
 
 int Entity::calcDamage(double hitChance, int minHit, int maxHit)

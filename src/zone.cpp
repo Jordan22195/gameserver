@@ -1,7 +1,18 @@
 #include "zone.h"
 #include "player.h"
+#include "logger.h"
 
 using namespace std;
+
+Player * Zone::getPlayer(string targetName)
+{
+    Logger::TRACE("Player * Zone::getPlayer(string targetName) %p", this);
+    if (players.count(targetName)!=0)
+        return players[targetName];
+    else
+        return nullptr;
+}
+
 
 string Zone::getZoneView()
 {
@@ -15,13 +26,16 @@ string Zone::getZoneView()
     
     cout << endl;
 
+
     cout << "PLAYERS" << endl;
-    for (int i = 0; i < players.size(); i++)
+
+    for (auto const& p : players)
     {
-        cout << i << " ";
-        players[i]->getStatus();
+        p.second->getStatus(); // string's value 
         cout << endl;
     }
+
+
 }
 
 void Zone::respawnEntites()
@@ -52,8 +66,8 @@ void Zone::respawnEntites()
 
 void Zone::playerActions()
 {
-    for (auto p : players)
+    for (auto const& p : players)
     {
-        p->update();
+        p.second->update(); // string's value 
     }
 }
