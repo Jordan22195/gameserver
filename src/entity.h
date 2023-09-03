@@ -22,6 +22,17 @@ struct ActionResult
 {
     vector<Item> items;
     int xp = 0;
+
+    string packetify()
+    {
+        stringstream ss;
+        ss << xp << endl;
+        for (auto i : items)
+        {
+            ss << i.packetify();
+        }
+        return ss.str();
+    }
 };
 
 
@@ -55,6 +66,7 @@ class Entity
     virtual string packetify()
     {
         stringstream ss;
+        ss << "ENTITY" << endl;
         ss << name << endl;
         ss << skillType << endl;
         ss << health << endl;

@@ -36,11 +36,11 @@ int udpSocket::stringSend( string s)
 
     cout << "sending to client" << endl;
     const char * data = s.c_str();
-    int len = s.length();
+    int len = s.length() + 4;
     cout << "packet size " << len << endl;
-    char buffer[len+4];
+    char buffer[len];
     memcpy(&buffer, &len, 4);
-    memcpy(&buffer[4], data, len);
+    memcpy(&buffer[4], data, s.length());
     cout << "memcpy" << endl;
 
     int ret = send(&buffer[0], len);

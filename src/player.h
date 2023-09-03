@@ -12,7 +12,7 @@
 #include "inventory.h"
 #include "timeKeeping.h"
 #include "skill.h"
-
+#include "websocketInterface.h"
 
 using namespace std;
 
@@ -22,6 +22,7 @@ class Player
 {
 
     public:
+    WebsocketInterface * clientInterface;
     Player(string playerID);
     string name;
     map<SKILL_TYPE, Skill*> skills;
@@ -40,7 +41,7 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
     void setEntityTarget(Entity * entityRef);
     Skill * getActiveSkill();
     void stopEntityAction();
-    void startEntityAction();
+    bool startEntityAction();
     double calcHitChance();
     int calcMinHit();
     int calcMaxHit();
@@ -54,12 +55,13 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
     {
         Logger::TRACE("virtual string Player:packetify()  %p", this);
         stringstream ss;
-
-        ss << name;
+        ss << "PLAYER" << endl;
+        ss << name << endl;
+        ss << "SKILLS" << endl;
         ss << skills.size() << endl;
         for (auto &s : skills)
         {
-            ss << s.first << endl << s.second->xp << endl;
+            ss << "SKILL" << endl << s.second->name << endl << s.second->xp << endl;
         }
         ss << bag.packetify();
         return ss.str();

@@ -1,8 +1,8 @@
 #include "websocketInterface.h"
 
+
 WebsocketInterface::WebsocketInterface()
 {
-
     Logger::TRACE("websocketInterface::websocketInterface() %p", this);
 
     string ip = "0.0.0.0";
@@ -23,6 +23,8 @@ WebsocketInterface::WebsocketInterface()
 void WebsocketInterface::sendServerMessage(string playerName, string data)
 {
     Logger::TRACE("websocketInterface::sendServerMessage(string playerName, string data) %p", this);
+
+    lock_guard<std::mutex> lock(TxMtx);
     string packet = playerName;
     packet.push_back('\n');
     packet += data;
@@ -33,10 +35,20 @@ void WebsocketInterface::sendServerMessage(string playerName, string data)
 string WebsocketInterface::recieveServerMessage()
 {
     Logger::TRACE("websocketInterface::recieveServerMessage() %p", this);
+
+    lock_guard<std::mutex> lock(RxMtx);
     string s = rxSocket->rxClientMessage();
 
     return s;
 
 
+}
+
+void WebsocketInterface::clientActionResponse(commandResponse resp)
+{
+    Logger::TRACE(" WebsocketInterface::clientActionResponse(commandResponse resp) %p", this);
+
+    Logger::TRACE("client: %s | data: %s", resp.name.c_str(), resp.data.c_str());
+    sendServerMessage(resp.name, resp.data);
 }
 

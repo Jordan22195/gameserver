@@ -24,7 +24,7 @@ void Player::setEntityTarget(Entity * entityRef)
 Skill * Player::getActiveSkill()
 {
     Logger::TRACE("Skill * Player::getActiveSkill() %p", this);
-    if(entityTarget != nullptr)
+    if(entityTarget)
     {
         if(entityTarget->skillType == MELEE_COMBAT)
         {
@@ -43,18 +43,20 @@ void Player::stopEntityAction()
         actionThread.join();
     }
 }
-void Player::startEntityAction()
+bool Player::startEntityAction()
 {
      Logger::TRACE("void Player::startEntityAction() %p", this);
     performingAction = true;
-    if (entityTarget == nullptr) return;
+    if (entityTarget == nullptr) return false;
     actionCounter = 0;
 
     nextActionTime = TimeKeeping::lastServerTime + getActiveSkill()->actionInterval;
+    return true;
 }
 
 double Player::calcHitChance()
 {
+    Logger::TRACE("double Player::calcHitChance() %p", this);
     auto skill = getActiveSkill();
     if (skill != nullptr)
     {
@@ -64,6 +66,7 @@ double Player::calcHitChance()
 }
 int Player::calcMinHit()
 {
+    Logger::TRACE("int Player::calcMinHit() %p", this);
     int maxHit = calcMaxHit();
     int minHit = (int)((calcHitChance()-1.0) * (double)maxHit) + 1;
     if (minHit < maxHit) return minHit;
@@ -71,6 +74,7 @@ int Player::calcMinHit()
 }
 int Player::calcMaxHit()
 {
+    Logger::TRACE("int Player::calcMaxHit() %p", this);
     auto skill = getActiveSkill();
     if (skill != nullptr)
     {
@@ -98,6 +102,7 @@ void  Player::update()
 }
 void  Player::doEntityAction()
 {
+    Logger::TRACE("void  Player::doEntityAction()) %p", this);
     auto skill = getActiveSkill();
     //cout << "time till action " << nextActionTime- TimeKeeping::lastServerTime << endl;
     if (performingAction && (TimeKeeping::lastServerTime >= nextActionTime))
@@ -132,14 +137,7 @@ void Player::getStatus()
 
 void Player::reportActionResults(ActionResult res)
 {
-    string s = name + "\n";
-     std::ofstream fs("../pipe1");
-    fs << name << endl;
-    fs << "Action Result " << res.xp; 
-    for (Item &i : res.items)
-    {
-        fs << " " << i.name << " " << i.quantity;
-    }
-    fs << entityTarget->getStatus();
-    fs << endl;
+
+    clientInterface->sendServerMessage(name, res.packetify());
+
 }

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <sstream>
 
 using namespace std;
 
@@ -16,6 +17,7 @@ class  Item
     string description;
     int quantity = 1;
     virtual string getName();
+    virtual string packetify();
 };
 
 class RegularLogsItem : public Item

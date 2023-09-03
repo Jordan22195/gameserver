@@ -14,6 +14,7 @@
 #include "combatEntity.h"
 #include "resourceEntity.h"
 #include "logger.h"
+#include "websocketInterface.h"
 
 
 using namespace std;
@@ -24,13 +25,16 @@ class Entity;
 class Zone
 {   
     public:
+    WebsocketInterface * clientInterface;
     string name;
-    vector<Entity*> entities;
+    map<string, Entity*> entities;
     map<string, Player*> players;
     static long long lastServerUpdate;
     void respawnEntites();
     void playerActions();
     Player * getPlayer(string targetName);
+
+    void createNewPlayer(string name);
 
     virtual string getZoneView();
 
@@ -39,11 +43,12 @@ class Zone
         Logger::TRACE(" virtual string Zone::packetify() %p", this);
         stringstream ss;
 
-        ss << name;
+        ss << "ZONE" << endl << this->name << endl;
+        ss << "ENTITIES" << endl;
         ss << entities.size() << endl;
         for (auto e : entities)
         {
-            ss << e->packetify();
+            ss << e.second->packetify();
         }
 
         cout << "zone packet" << endl << ss.str() << endl;
@@ -65,8 +70,10 @@ class Zone1 : public Zone{
     {
         printf("zone created\n");
         name = "Tutorial Island";
-        entities.push_back(new Tree(5));
-        entities.push_back(new Goblin(5));
+        auto * tr = new Tree(5);
+        auto * g = new Goblin(5);
+        entities[tr->name] = tr;
+        entities[g->name] = g;
         t = thread(&Zone1::respawnEntites, this);
     }
 

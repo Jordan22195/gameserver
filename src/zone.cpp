@@ -1,8 +1,14 @@
 #include "zone.h"
 #include "player.h"
-#include "logger.h"
 
 using namespace std;
+
+void Zone::createNewPlayer(string name)
+{
+    Logger::TRACE("void Zone::createNewPlayer(string name) %p", this);
+    players[name] = new Player(name);
+    players[name]->clientInterface = this->clientInterface;
+}
 
 Player * Zone::getPlayer(string targetName)
 {
@@ -16,15 +22,7 @@ Player * Zone::getPlayer(string targetName)
 
 string Zone::getZoneView()
 {
-    cout << "ENTITIES" << endl;
-    for (int i = 0; i < entities.size(); i++)
-    {
-        cout << i << " ";
-        entities[i]->getStatus();
-        cout << endl;
-    }
-    
-    cout << endl;
+
 
 
     cout << "PLAYERS" << endl;
@@ -45,13 +43,13 @@ void Zone::respawnEntites()
         auto now = chrono::duration_cast< chrono::milliseconds >(chrono::system_clock::now().time_since_epoch()).count();
         TimeKeeping::lastServerTime = now;
         long long soonestRespawnTime = numeric_limits<long long>::max();
-        for ( Entity *e : entities)
+        for ( auto e : entities)
         {
-            while(e->getNextRespawnTime() <= now  && e->getNextRespawnTime() > 0)
+            while(e.second->getNextRespawnTime() <= now  && e.second->getNextRespawnTime() > 0)
             {
-                e->respawn();
+                e.second->respawn();
             }
-            auto t = e->getNextRespawnTime();
+            auto t = e.second->getNextRespawnTime();
             if(t > now && t < soonestRespawnTime )
             {
                 soonestRespawnTime = t;

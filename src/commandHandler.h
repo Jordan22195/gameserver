@@ -4,33 +4,30 @@
 
 #include "zone.h"
 #include "player.h"
-
+#include "websocketInterface.h"
 #include <string>
 #include <iostream>
 
 using namespace std;
 
-struct commandResponse
-{
-    string name;
-    string data;
-};
+
 
 class CommandHander 
 {
     public:
+    WebsocketInterface * clientInterface;
     Zone * zone;
-    commandResponse clientActionRequestHandler(string message)
+    void clientActionRequestHandler(string message)
     {
         Logger::TRACE("commandResponse clientActionRequestHandler(string message) %p", this);
-        commandResponse ret;
+        commandResponse cmdResponse;
         stringstream input(message);
         string name;
         string action;
         int numParams;
         input >> name;
         input >> action;
-        input >> numParams;
+
 
         vector<string> params;
 
@@ -39,7 +36,6 @@ class CommandHander
 
         cout << "name " << name << endl;
         cout << "action " << action << endl;
-        cout << "numParams " << numParams << endl;
 
 
         if (action == "LOGIN")
@@ -50,17 +46,56 @@ class CommandHander
             if (zone->players.count(name) == 0)
             {
                 zone->players[name] = new Player(name);
+                zone->players[name]->clientInterface = this->clientInterface;
             }
-            ret.name = name;
-            ret.data = zone->players[name]->packetify();
+            cmdResponse.name = name;
+            cmdResponse.data = zone->packetify() + zone->players[name]->packetify();
+            clientInterface->clientActionResponse(cmdResponse);
 
         }
-        else
+
+
+        if (zone->players.count(name) == 0)
         {
+            cmdResponse.name = name;
+            cmdResponse.data = "UNKNOWN_PLAYER";
+            clientInterface->clientActionResponse(cmdResponse);
+            return;
+        }
+
+        cmdResponse.name = name;
+        while(input)
+        {
+            if(action == "SET_ENTITY_TARGET")
+            {
+                string entTarget;
+                input >> entTarget;
+                if(zone->entities.count(entTarget) != 0)
+                {
+                    zone->players[name]->setEntityTarget(zone->entities[entTarget]);
+                    cmdResponse.data = "SET_ENTITY_TARGET\n" + entTarget + "\nSUCCESS";
+                    clientInterface->clientActionResponse(cmdResponse);
+                }
+            } 
+            if(action == "PERFORM_ENTITY_ACTION")
+            {
+                if(zone->players[name]->startEntityAction())
+                {
+                    cmdResponse.data = "PERFORM_ENTITY_ACTION\nSUCCESS";
+                }
+                else{
+                    cmdResponse.data = "PERFORM_ENTITY_ACTION\nFAILURE";
+                }
+                clientInterface->clientActionResponse(cmdResponse);
+            }
+
+
+
+            input >> action;
 
         }
 
-        return ret;
+
 
     }
 };

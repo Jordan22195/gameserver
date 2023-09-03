@@ -26,10 +26,14 @@ int main()
 
     Logger::setLogLevel(Logger::LogLevel::TRACE);
     Zone1 zone;
+    
 
     WebsocketInterface clientInterface;
 
+    zone.clientInterface = &clientInterface;
+
     CommandHander commandHandler;
+    commandHandler.clientInterface = &clientInterface;
     commandHandler.zone = &zone;
 
 
@@ -52,14 +56,10 @@ int main()
     {
         std::this_thread::sleep_for(std::chrono::milliseconds((50)));
 
-       string clientRequest =  clientInterface.recieveServerMessage();
+        string clientRequest =  clientInterface.recieveServerMessage();
         if(clientRequest == "") continue;
 
-       commandResponse response = commandHandler.clientActionRequestHandler(clientRequest);
-        if(response.name != "")
-        {
-            clientInterface.sendServerMessage(response.name, response.data);
-        }
+        commandHandler.clientActionRequestHandler(clientRequest);
 
 
 
