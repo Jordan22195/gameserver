@@ -22,12 +22,12 @@ WebsocketInterface::WebsocketInterface()
 
 void WebsocketInterface::sendServerMessage(string playerName, json data)
 {
-    Logger::TRACE("websocketInterface::sendServerMessage(string playerName, string data) %p", this);
-
+    Logger::TRACE("websocketInterface::sendServerMessage(json playerName, json data) %p", this);
     lock_guard<std::mutex> lock(TxMtx);
-    string packet = playerName;
-    packet.push_back('\n');
-    packet += data.dump();
+    json j;
+    j["clientName"] = playerName;
+    j["data"] = data;
+    string packet = j.dump();
     Logger::INFO("Sent Packet: %s", packet.c_str());
     txSocket->stringSend(packet);
 }

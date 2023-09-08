@@ -9,6 +9,7 @@ json Item::to_json()
     j["name"] = name;
     j["description"] = description;
     j["quantity"] = quantity;
+    return j;
 }
 
 string Item::getName()

@@ -25,10 +25,11 @@ class combatEntity : public Entity
 class Goblin : public combatEntity
 {
     public:
-    Goblin(int numEntities)
+    Goblin(string id )
     {
-        count = numEntities;
-        maxCount = numEntities;
+        entId = id;
+        count = 1;
+        maxCount = 1;
         skillType = ATTACK;
         name = "Goblin";
         maxHealth = 10;

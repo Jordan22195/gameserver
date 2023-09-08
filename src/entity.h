@@ -65,6 +65,7 @@ struct ActionResult
         }
         j["items"] = itemArray;
         j["xpPoints"] = xpArray;
+        Logger::TRACE("action result to_json() \n %s", j.dump());
         return j;
     }
 };
@@ -73,6 +74,7 @@ struct ActionResult
 class Entity
 {
     public:
+    string entId;
     string name;
     int health;
     int maxHealth;
@@ -102,6 +104,7 @@ class Entity
     virtual json to_json()
     {
         json j;
+        j["id"] = entId;
         j["name"] = name;
         j["skillType"] = skillType;
         j["health"] = health;

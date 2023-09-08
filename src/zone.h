@@ -71,8 +71,8 @@ class Zone1 : public Zone{
     {
         printf("zone created\n");
         name = "Tutorial Island";
-        auto * tr = new Tree(5);
-        auto * g = new Goblin(5);
+        auto * tr = new Tree("tree1");
+        auto * g = new Goblin("goblin1");
         entities[tr->name] = tr;
         entities[g->name] = g;
         t = thread(&Zone1::respawnEntites, this);

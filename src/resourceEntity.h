@@ -16,10 +16,11 @@ class ResourceEntity : public Entity
 class Tree : public ResourceEntity
 {
     public:
-    Tree(int numEntities)
+    Tree(string id)
     {
-        count = numEntities;
-        maxCount = numEntities;
+        entId = id;
+        count = 1;
+        maxCount = 1;
         skillType = WOODCUTTING;
         levelRequirement = 1;
         name = "Tree";

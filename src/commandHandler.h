@@ -50,6 +50,8 @@ class CommandHander
             }
             cmdResponse.name = name;
             json j;
+            j["action"] = "LOGIN";
+            j["response"] = "SUCCESS";
             j["zone"] = zone->to_json();
             Logger::TRACE("zone added to cmd response");
             j["player"] =  zone->players[name]->to_json();
