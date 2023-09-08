@@ -8,6 +8,7 @@ import websockets
 import time
 import threading
 import socket
+import json
 
 from asyncio.events import AbstractEventLoop
 
@@ -43,7 +44,7 @@ def receive_udp_from_gameServer_and_forward_to_client():
         print(f"Received data from gameServer: {dataBuff[4:]}")
         print(f"data len: {len(dataBuff)}")
 
-        clientName = get_nth_item(received_message, 0)
+        clientName = json.loads(received_message)['clientName']
         if(connected_clients.get(clientName, "")!= ""): 
             loop.run_until_complete(send_message(connected_clients.get(clientName, ""), received_message))
             print(f"Sent gameServer packet to client: {clientName}")
