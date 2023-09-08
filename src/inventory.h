@@ -9,7 +9,9 @@
 
 #include "item.h"
 #include "logger.h"
+#include "json.hpp"
 
+using json = nlohmann::json;
 
 class Inventory
 {
@@ -21,7 +23,7 @@ class Inventory
     Item * get(Item i);
     void removeItem(Item i); 
     void showInventory(); 
-    string packetify();
+    json to_json();
     private:
     map<string, Item> items;
 

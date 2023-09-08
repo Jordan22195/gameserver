@@ -30,7 +30,7 @@
            bag->removeItem(i);
         }
         ActionResult r;
-        r.xp = xpValue;
+        //r.xp = xpValue;
         r.items = loot.roll();
         
     }

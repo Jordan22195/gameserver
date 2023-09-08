@@ -7,7 +7,10 @@
         int d = takeDamage(calcDamage(hitChance, minHit, maxHit));
         if ( d > 0)
         {
-            r.xp = xpValue;
+            skillXP xpres;
+            xpres.skillType = this->skillType;
+            xpres.xpAmount = xpValue;
+            r.xp.push_back(xpres);
             r.items = loot.roll();
         }
         return r;

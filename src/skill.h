@@ -9,16 +9,20 @@
 #include "inventory.h"
 #include "databaseInterface.h"
 #include "logger.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 using namespace std;
 
 enum SKILL_TYPE
 {
     WOODCUTTING,
-    STRENGTH,
     ATTACK,
-    FLETCHING,
-    MELEE_COMBAT
+    HITPOINTS,
+    DEFENCE,
+    RANGED,
+    FLETCHING
 };
 
 class Skill
@@ -70,6 +74,16 @@ class Skill
         level++;
         cout << name << " level up! New Level is " << level << endl;
     }
+
+    json to_json()
+    {
+        json j;
+        j["name"] = name;
+        j["level"] = level;
+        j["actionInterval"] = actionInterval;
+
+        return j;
+    }
 };
 
 
@@ -94,21 +108,10 @@ class AttackSkill : public Skill
         name = "Attack";
         xp = 0;
         level = 1;
-        type = MELEE_COMBAT;
+        type = ATTACK;
     }
 };
 
-class StrengthSkill : public Skill
-{
-    public:
-    StrengthSkill(string playerId) : Skill(playerId)
-    {
-        name = "Strength";
-        xp = 0;
-        level = 1;
-        type = MELEE_COMBAT;
-    }
-};
 
 class FletchingSkill : public Skill
 {

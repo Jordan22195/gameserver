@@ -13,6 +13,9 @@
 #include "timeKeeping.h"
 #include "skill.h"
 #include "websocketInterface.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 using namespace std;
 
@@ -50,21 +53,27 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
     void doEntityAction();
     void getStatus();
     void reportActionResults(ActionResult res);
+    json toJson();
 
-    virtual string packetify()
+    virtual json to_json()
     {
+
         Logger::TRACE("virtual string Player:packetify()  %p", this);
-        stringstream ss;
-        ss << "PLAYER" << endl;
-        ss << name << endl;
-        ss << "SKILLS" << endl;
-        ss << skills.size() << endl;
-        for (auto &s : skills)
+
+        json j;
+        j["name"] = name;
+        json skillsArray = json::array();
+         for (auto &s : skills)
         {
-            ss << "SKILL" << endl << s.second->name << endl << s.second->xp << endl;
+            skillsArray.push_back(s.second->to_json());
         }
-        ss << bag.packetify();
-        return ss.str();
+        Logger::TRACE("end of skills");
+        j["skills"] = skillsArray;
+        Logger::TRACE("put skills in ret");
+        j["bag"] = bag.to_json();
+        Logger::TRACE("put bag in ret");
+
+        return j;
     }
 
 };

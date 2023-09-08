@@ -41,6 +41,8 @@ int Entity::calcDamage(double hitChance, int minHit, int maxHit)
     }
 }
 
+
+
 int Entity::takeDamage(int amount)
 {
     if (health > 0)
@@ -67,6 +69,11 @@ int Entity::takeDamage(int amount)
 }
 
  ActionResult Entity::action(double hitChance, int minHit, int maxHit)
+ {
+    return ActionResult();
+ }
+
+  ActionResult Entity::action(double hitChance, int minHit, int maxHit, SKILL_TYPE skillType)
  {
     return ActionResult();
  }

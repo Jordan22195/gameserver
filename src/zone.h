@@ -15,7 +15,9 @@
 #include "resourceEntity.h"
 #include "logger.h"
 #include "websocketInterface.h"
+#include "json.hpp"
 
+using json = nlohmann::json;
 
 using namespace std;
 
@@ -38,21 +40,20 @@ class Zone
 
     virtual string getZoneView();
 
-    virtual string packetify()
+    virtual json to_json()
     {
         Logger::TRACE(" virtual string Zone::packetify() %p", this);
-        stringstream ss;
 
-        ss << "ZONE" << endl << this->name << endl;
-        ss << "ENTITIES" << endl;
-        ss << entities.size() << endl;
+        json j;
+        j["name"] = name;
+        json entityArray = json::array();
         for (auto e : entities)
         {
-            ss << e.second->packetify();
+            entityArray.push_back(e.second->to_json());
         }
+        j["entities"] = entityArray;
 
-        cout << "zone packet" << endl << ss.str() << endl;
-        return ss.str();
+        return j;
        
     }
     

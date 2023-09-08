@@ -15,23 +15,57 @@
 #include "item.h"
 #include "skill.h"
 #include "dropTable.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
+
 
 using namespace std;
 
+enum SKILL_CATEGORY
+{
+    GATHER,
+    COMBAT,
+    CRAFT
+};
+
+struct skillXP
+{
+    SKILL_TYPE skillType;
+    int xpAmount;
+    
+
+    json to_json()
+    {
+        json j;
+        j["skill"] = skillType;
+        j["xp"] = xpAmount;
+
+        return j;
+    }
+};
+
 struct ActionResult
 {
+    vector<skillXP> xp;
     vector<Item> items;
-    int xp = 0;
 
-    string packetify()
+    json to_json()
     {
-        stringstream ss;
-        ss << xp << endl;
+        json j;
+        json itemArray = json::array();
+        json xpArray = json::array();
         for (auto i : items)
         {
-            ss << i.packetify();
+            itemArray.push_back(i.to_json());
         }
-        return ss.str();
+        for (auto x : xp)
+        {
+            xpArray.push_back(x.to_json());
+        }
+        j["items"] = itemArray;
+        j["xpPoints"] = xpArray;
+        return j;
     }
 };
 
@@ -50,6 +84,7 @@ class Entity
     SKILL_TYPE skillType;
     int levelRequirement;
     int difficulty;
+    SKILL_CATEGORY skillCategory;
 
     queue<long long> respawnTimes;
 
@@ -62,18 +97,18 @@ class Entity
     int takeDamage(int amount);
 
     virtual ActionResult action(double hitChance, int minHit, int maxHit);
+    virtual ActionResult action(double hitChance, int minHit, int maxHit, SKILL_TYPE skill);
 
-    virtual string packetify()
+    virtual json to_json()
     {
-        stringstream ss;
-        ss << "ENTITY" << endl;
-        ss << name << endl;
-        ss << skillType << endl;
-        ss << health << endl;
-        ss << maxHealth << endl;
-        ss << count << endl;
-        ss << maxCount << endl;
-        return ss.str();
+        json j;
+        j["name"] = name;
+        j["skillType"] = skillType;
+        j["health"] = health;
+        j["maxHealth"] = maxHealth;
+        j["count"] = count;
+        j["maxCount"] = maxCount;
+        return j;
     }
 
     protected:

@@ -39,7 +39,7 @@ add_executable(${PROJECT_NAME}
         src/gameServer.cpp src/combatEntity.cpp src/craftingEntity.cpp src/dropTable.cpp 
         src/entity.cpp src/inventory.cpp src/item.cpp src/player.cpp src/resourceEntity.cpp 
         src/zone.cpp src/udpsend.cpp src/websocketInterface.cpp src/commandHandler.h
-        src/logger.cpp)
+        src/logger.cpp src/json.hpp)
 
 target_link_libraries(${PROJECT_NAME}
         ${AWSSDK_LINK_LIBRARIES})

@@ -11,12 +11,13 @@ class combatEntity : public Entity
     int strengthLevel;
     combatEntity()
     {
+        skillCategory = COMBAT;
         xpValue = 5;
         levelRequirement = 0;
     }
 
     
-    ActionResult action(double hitChance, int minHit, int maxHit) override; //double hitChance, int minHit, int maxHit) override;
+    ActionResult action(double hitChance, int minHit, int maxHit, SKILL_TYPE skillType) override;//double hitChance, int minHit, int maxHit) override;
 
 
 };
@@ -28,7 +29,7 @@ class Goblin : public combatEntity
     {
         count = numEntities;
         maxCount = numEntities;
-        skillType = MELEE_COMBAT;
+        skillType = ATTACK;
         name = "Goblin";
         maxHealth = 10;
         health = maxHealth;

@@ -1,9 +1,14 @@
 #include "item.h"
 
-string Item::packetify()
+#include "logger.h"
+
+json Item::to_json()
 {
-    stringstream ss;
-    ss << name << endl << quantity << endl;
+    Logger::TRACE("Item::to_json()");
+    json j;
+    j["name"] = name;
+    j["description"] = description;
+    j["quantity"] = quantity;
 }
 
 string Item::getName()

@@ -1,9 +1,12 @@
 #include "player.h"
 #include "logger.h"
+#include "combatEntity.h"
+
 
 #include <cstring>
 #include <fstream>
 #include <iostream>
+
 
 Player::Player(string playerId)
 {
@@ -11,7 +14,7 @@ Player::Player(string playerId)
     name = playerId;
     skills[WOODCUTTING] = new WoodCuttingSkill(playerId);
     skills[ATTACK] = new AttackSkill(playerId);
-    skills[STRENGTH] = new StrengthSkill(playerId);
+ 
 }
 
 void Player::setEntityTarget(Entity * entityRef)
@@ -26,7 +29,7 @@ Skill * Player::getActiveSkill()
     Logger::TRACE("Skill * Player::getActiveSkill() %p", this);
     if(entityTarget)
     {
-        if(entityTarget->skillType == MELEE_COMBAT)
+        if(entityTarget->skillCategory == COMBAT)
         {
             return  skills[ATTACK];
         }
@@ -84,7 +87,7 @@ int Player::calcMaxHit()
         }
         else
         {
-            return skills[STRENGTH]->level;
+            return skills[ATTACK]->level;
         }
     }
     return 0;
@@ -109,11 +112,15 @@ void  Player::doEntityAction()
     {
 
         if (skill->level >= entityTarget->levelRequirement)
-        {
+        {   
+        
             actionCounter ++;
-            ActionResult res = entityTarget->action(calcHitChance(), calcMinHit(), calcMaxHit());
+            ActionResult res = entityTarget->action(calcHitChance(), calcMinHit(), calcMaxHit(), ATTACK);
             reportActionResults(res);
-            skill->addXp(res.xp);
+            for (auto xp : res.xp)
+            {
+                skills[xp.skillType]->addXp(xp.xpAmount);
+            }
             bag.addItems(res.items);
             nextActionTime = TimeKeeping::lastServerTime + skill->actionInterval;
         }
@@ -137,7 +144,8 @@ void Player::getStatus()
 
 void Player::reportActionResults(ActionResult res)
 {
+    json j;
 
-    clientInterface->sendServerMessage(name, res.packetify());
+    clientInterface->sendServerMessage(name, res.to_json());
 
 }

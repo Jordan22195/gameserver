@@ -4,13 +4,16 @@
 #include "udpsend.h"
 #include <string>
 #include "logger.h"
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 using namespace std;
 
 struct commandResponse
 {
     string name;
-    string data;
+    json data;
 };
 
 class WebsocketInterface
@@ -24,7 +27,7 @@ class WebsocketInterface
     udpSocket *rxSocket = nullptr;
     void clientActionRequestHandler(string message);
     void clientActionResponse(commandResponse resp);
-    void sendServerMessage(string playerName, string data);
+    void sendServerMessage(string playerName, json data);
     string recieveServerMessage();
 
     private:

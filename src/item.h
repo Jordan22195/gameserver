@@ -4,7 +4,9 @@
 #include <string>
 #include <memory>
 #include <sstream>
+#include "json.hpp"
 
+using json = nlohmann::json;
 using namespace std;
 
 
@@ -17,7 +19,7 @@ class  Item
     string description;
     int quantity = 1;
     virtual string getName();
-    virtual string packetify();
+    virtual json to_json();
 };
 
 class RegularLogsItem : public Item

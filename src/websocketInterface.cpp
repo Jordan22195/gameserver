@@ -20,14 +20,14 @@ WebsocketInterface::WebsocketInterface()
 }
 
 
-void WebsocketInterface::sendServerMessage(string playerName, string data)
+void WebsocketInterface::sendServerMessage(string playerName, json data)
 {
     Logger::TRACE("websocketInterface::sendServerMessage(string playerName, string data) %p", this);
 
     lock_guard<std::mutex> lock(TxMtx);
     string packet = playerName;
     packet.push_back('\n');
-    packet += data;
+    packet += data.dump();
     Logger::INFO("Sent Packet: %s", packet.c_str());
     txSocket->stringSend(packet);
 }
@@ -48,7 +48,6 @@ void WebsocketInterface::clientActionResponse(commandResponse resp)
 {
     Logger::TRACE(" WebsocketInterface::clientActionResponse(commandResponse resp) %p", this);
 
-    Logger::TRACE("client: %s | data: %s", resp.name.c_str(), resp.data.c_str());
     sendServerMessage(resp.name, resp.data);
 }
 

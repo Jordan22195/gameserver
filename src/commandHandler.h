@@ -49,7 +49,12 @@ class CommandHander
                 zone->players[name]->clientInterface = this->clientInterface;
             }
             cmdResponse.name = name;
-            cmdResponse.data = zone->packetify() + zone->players[name]->packetify();
+            json j;
+            j["zone"] = zone->to_json();
+            Logger::TRACE("zone added to cmd response");
+            j["player"] =  zone->players[name]->to_json();
+            Logger::TRACE("player added to cmd response");
+            cmdResponse.data = j;
             clientInterface->clientActionResponse(cmdResponse);
 
         }
@@ -58,8 +63,8 @@ class CommandHander
         if (zone->players.count(name) == 0)
         {
             cmdResponse.name = name;
-            cmdResponse.data = "UNKNOWN_PLAYER";
-            clientInterface->clientActionResponse(cmdResponse);
+            //cmdResponse.data = "UNKNOWN_PLAYER";
+            //clientInterface->clientActionResponse(cmdResponse);
             return;
         }
 
@@ -79,13 +84,15 @@ class CommandHander
             } 
             if(action == "PERFORM_ENTITY_ACTION")
             {
+                json j;
                 if(zone->players[name]->startEntityAction())
                 {
-                    cmdResponse.data = "PERFORM_ENTITY_ACTION\nSUCCESS";
+                    j["PERFORM_ENTITY_ACTION"] = "SUCCESS";
                 }
                 else{
-                    cmdResponse.data = "PERFORM_ENTITY_ACTION\nFAILURE";
+                    j["PERFORM_ENTITY_ACTION"] = "FAILURE";
                 }
+                cmdResponse.data = j;
                 clientInterface->clientActionResponse(cmdResponse);
             }
 

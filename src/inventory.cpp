@@ -53,14 +53,19 @@ void Inventory::showInventory() {
     }
 }
 
-string Inventory::packetify()
+json Inventory::to_json()
 {
-    Logger::TRACE("string Inventory::packetify()  %p", this);
-    stringstream ss;
-    ss << items.size() << endl;
+    Logger::TRACE("string Inventory::to_json()  %p", this);
+    json j;
+    json itemArray = json::array();
+    Logger::TRACE("item array created");
     for (auto it = items.begin(); it != items.end() ; ++it)
     {
-        ss << it->first << endl << it->second.quantity << endl;
+        Logger::TRACE("json-ifie next item");
+        json j = it->second.to_json();
+        //itemArray.push_back(j.dump());
     }
-    return ss.str();
+    Logger::TRACE("end of items");
+    j["items"] = itemArray;
+    return itemArray;
 }
