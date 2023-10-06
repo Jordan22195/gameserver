@@ -16,7 +16,7 @@ class ResourceEntity : public Entity
 class Tree : public ResourceEntity
 {
     public:
-    Tree(string id)
+    Tree(int id)
     {
         entId = id;
         count = 1;
@@ -32,7 +32,7 @@ class Tree : public ResourceEntity
 
         printf("entity %s created\n", name.c_str());
 
-        loot.addEntry(RegularLogsItem(), 1.00, 1, 2);
+        loot.addEntry(1, 1.00, 1, 2);
 
 
     }

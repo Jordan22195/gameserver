@@ -17,6 +17,7 @@
 #include "dropTable.h"
 #include "json.hpp"
 
+
 using json = nlohmann::json;
 
 
@@ -48,7 +49,7 @@ struct skillXP
 struct ActionResult
 {
     vector<skillXP> xp;
-    vector<Item> items;
+    vector<rollResult> items;
 
     json to_json()
     {
@@ -74,7 +75,7 @@ struct ActionResult
 class Entity
 {
     public:
-    string entId;
+    int entId;
     string name;
     int health;
     int maxHealth;

@@ -15,7 +15,7 @@ class arrowShaftCraftingEntity : public craftingEntity
     arrowShaftCraftingEntity()
     {
         craftingInput.push_back(RegularLogsItem(1));
-        loot.addEntry(ArrowShaftsItem(), 1.0, 5);
+        loot.addEntry(2, 1.0, 5);
 
         skillType = SKILL_TYPE::FLETCHING;
         xpValue = 5;

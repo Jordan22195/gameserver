@@ -16,6 +16,8 @@
 #include "logger.h"
 #include "websocketInterface.h"
 #include "json.hpp"
+#include "dropTable.h"
+#include "entityFactory.h"
 
 using json = nlohmann::json;
 
@@ -29,7 +31,10 @@ class Zone
     public:
     WebsocketInterface * clientInterface;
     string name;
-    map<string, Entity*> entities;
+
+    //unique id, count
+    map<string, int> entities;
+    dropTable entitySpawnTable;
     map<string, Player*> players;
     static long long lastServerUpdate;
     void respawnEntites();
@@ -38,7 +43,7 @@ class Zone
 
     void createNewPlayer(string name);
 
-    virtual string getZoneView();
+    void explore();
 
     virtual json to_json()
     {
@@ -49,7 +54,10 @@ class Zone
         json entityArray = json::array();
         for (auto e : entities)
         {
-            entityArray.push_back(e.second->to_json());
+            json entEntry;
+            entEntry["id"]=e.first;
+            entEntry["count"]=e.second;
+            entityArray.push_back(entEntry);
         }
         j["entities"] = entityArray;
 
@@ -71,11 +79,7 @@ class Zone1 : public Zone{
     {
         printf("zone created\n");
         name = "Tutorial Island";
-        auto * tr = new Tree("tree1");
-        auto * g = new Goblin("goblin1");
-        entities[tr->entId] = tr;
-        entities[g->entId] = g;
-        t = thread(&Zone1::respawnEntites, this);
+        entitySpawnTable.addEntry(COMBAT_GOBLIN_NORMAL_1, .5, 1);
     }
 
 

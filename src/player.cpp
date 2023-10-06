@@ -17,11 +17,13 @@ Player::Player(string playerId)
  
 }
 
-void Player::setEntityTarget(Entity * entityRef)
+
+void Player::setEntityTarget(string id)
 {
+    //create ent with factory from id
     Logger::TRACE("Player::setEntityTarget(Entity * entityRef) %p", this);
     stopEntityAction();
-    entityTarget = entityRef;
+    //entityTarget = entityRef;
 }
 
 Skill * Player::getActiveSkill()
@@ -102,6 +104,8 @@ Inventory * Player::getPlayerInventory()
 void  Player::update()
 {
     doEntityAction();
+    //TODO 
+    //update entity count in zone from count in current entity target
 }
 void  Player::doEntityAction()
 {
@@ -121,7 +125,7 @@ void  Player::doEntityAction()
             {
                 skills[xp.skillType]->addXp(xp.xpAmount);
             }
-            bag.addItems(res.items);
+            //bag.addItems(res.items);
             nextActionTime = TimeKeeping::lastServerTime + skill->actionInterval;
         }
     

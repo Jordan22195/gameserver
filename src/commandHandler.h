@@ -82,8 +82,8 @@ class CommandHander
                     json j;
                     j["action"] = action;
                     j["result"] = "SUCCESS";
-                    j["entity"] = zone->entities[entTarget]->to_json();
-                    zone->players[name]->setEntityTarget(zone->entities[entTarget]);
+                    j["entity"] = "";// TODO //zone->entities[entTarget]->to_json();
+                    //zone->players[name]->setEntityTarget(zone->entities[entTarget]);
                     cmdResponse.data = j;
                     clientInterface->clientActionResponse(cmdResponse);
                 }

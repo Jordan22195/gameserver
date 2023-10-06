@@ -55,7 +55,6 @@ int Entity::takeDamage(int amount)
         health -= amount;
         if (health == 0 && count > 0)
         {
-            respawnTimes.push(TimeKeeping::lastServerTime + respawnTime);
             health = maxHealth;
             count --;
         }

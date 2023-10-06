@@ -1,15 +1,15 @@
 
 #include "dropTable.h"
 
-void dropTable::addEntry(Item item, double dropChance, int quantity)
+void dropTable::addEntry(int itemId, double dropChance, int quantity)
 {
-    addEntry(item, dropChance, quantity, quantity);
+    addEntry(itemId, dropChance, quantity, quantity);
 }
 
-void dropTable::addEntry(Item item, double dropChance, int quantityMin, int quantityMax)
+void dropTable::addEntry(int itemId, double dropChance, int quantityMin, int quantityMax)
 {
     entry e;
-    e.item = item;
+    e.id = itemId;
     e.dropChance = dropChance;
     e.quantityMin = quantityMin;
     e.quantityMax = quantityMax;
@@ -33,16 +33,17 @@ int dropTable::getRandomInt(int min, int max)
     return dis(gen);
 }
 
-vector<Item> dropTable::roll()
+vector<rollResult> dropTable::roll()
 {
-    vector<Item> ret;
+    vector<rollResult> ret;
     for (entry& e : table)
     {
         if(getRandomDouble(0.0, 1.0) < e.dropChance)
         {
-            auto i = e.item;
-            i.quantity = getRandomInt(e.quantityMin, e.quantityMax);
-            ret.push_back(i);
+            rollResult r;
+            r.id = e.id;
+            r.count = getRandomInt(e.quantityMin, e.quantityMax);
+            ret.push_back(r);
 
         }
     }

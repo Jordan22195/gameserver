@@ -41,7 +41,7 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
 
 
     Player();
-    void setEntityTarget(Entity * entityRef);
+    void setEntityTarget(string entityId);
     Skill * getActiveSkill();
     void stopEntityAction();
     bool startEntityAction();

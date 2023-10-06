@@ -25,7 +25,7 @@ class combatEntity : public Entity
 class Goblin : public combatEntity
 {
     public:
-    Goblin(string id )
+    Goblin(int id )
     {
         entId = id;
         count = 1;
@@ -37,7 +37,7 @@ class Goblin : public combatEntity
         respawnTime = 5000;
         difficulty = 2;
 
-        loot.addEntry(CoinsItem(), 1.00, 1, 2);
+        loot.addEntry(0, 1.00, 1, 2);
     }
 };
 

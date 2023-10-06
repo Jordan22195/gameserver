@@ -15,6 +15,18 @@
 #include "skill.h"
 using namespace std;
 
+    struct rollResult
+    {
+        int id;
+        int count;
+
+        json to_json()
+        {
+            json j;
+            return j;
+        }
+
+    };
 
 class dropTable
 {
@@ -23,18 +35,20 @@ class dropTable
     struct entry
     {
 
-        Item item;
+        int id;
         double dropChance;
         int quantityMin;
         int quantityMax;
     };
     vector<entry> table;
 
-    void addEntry(Item item, double dropChance, int quantity);
-    void addEntry(Item item, double dropChance, int quantityMin, int quantityMax);
+
+
+    void addEntry(int item, double dropChance, int quantity);
+    void addEntry(int item, double dropChance, int quantityMin, int quantityMax);
     double getRandomDouble(double min, double max) ;
     int getRandomInt(int min, int max) ;
-    vector<Item> roll();
+    vector<rollResult> roll();
 
 };
 
