@@ -1,6 +1,7 @@
 #include "player.h"
 #include "logger.h"
 #include "combatEntity.h"
+#include "entityFactory.h"
 
 
 #include <cstring>
@@ -8,22 +9,29 @@
 #include <iostream>
 
 
+Player::Player()
+{
+
+}
+
 Player::Player(string playerId)
 {
     Logger::TRACE("Player::Player(string playerId) %p", this);
     name = playerId;
     skills[WOODCUTTING] = new WoodCuttingSkill(playerId);
     skills[ATTACK] = new AttackSkill(playerId);
+    currentZone = Zone1();
  
 }
 
 
-void Player::setEntityTarget(string id)
+void Player::setEntityTarget(int id)
 {
     //create ent with factory from id
     Logger::TRACE("Player::setEntityTarget(Entity * entityRef) %p", this);
     stopEntityAction();
-    //entityTarget = entityRef;
+    entityTarget = EntityFactory::createEntity((entityIdEnum)id);
+    entityTarget->count = currentZone.entities[id];
 }
 
 Skill * Player::getActiveSkill()
@@ -40,6 +48,30 @@ Skill * Player::getActiveSkill()
     return nullptr;
 }
 
+void Player::startExploreZone()
+{
+    exploring = true;
+    stopEntityAction();
+    actionCounter = 0;
+
+    nextActionTime = TimeKeeping::lastServerTime + 2000;
+}
+
+void Player::doExploreZone()
+{
+    Logger::TRACE("doExploreZone");
+    if (exploring && (TimeKeeping::lastServerTime >= nextActionTime))
+    {
+        nextActionTime = TimeKeeping::lastServerTime + 500;
+        currentZone.explore();
+        ClientMessage zoneUpdate;
+        zoneUpdate.playerName = name;
+        zoneUpdate.packetType = "ZONE";
+        zoneUpdate.data = currentZone.to_json();
+        clientInterface->clientMessage(zoneUpdate);
+    }
+}
+
 void Player::stopEntityAction()
 {
     Logger::TRACE("void Player::stopEntityAction() %p", this);
@@ -48,6 +80,7 @@ void Player::stopEntityAction()
         actionThread.join();
     }
 }
+
 bool Player::startEntityAction()
 {
      Logger::TRACE("void Player::startEntityAction() %p", this);
@@ -103,7 +136,16 @@ Inventory * Player::getPlayerInventory()
 
 void  Player::update()
 {
-    doEntityAction();
+    Logger::TRACE("update");
+    if(performingAction)
+    {
+        doEntityAction();
+    }
+    if(exploring)
+    {
+        doExploreZone();
+    }
+   
     //TODO 
     //update entity count in zone from count in current entity target
 }

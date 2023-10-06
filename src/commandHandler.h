@@ -7,6 +7,7 @@
 #include "websocketInterface.h"
 #include <string>
 #include <iostream>
+#include <thread>
 
 using namespace std;
 
@@ -16,7 +17,32 @@ class CommandHander
 {
     public:
     WebsocketInterface * clientInterface;
-    Zone * zone;
+    map<string, Player> playerTracker;
+
+    thread playerUpdateThread;
+
+    void playerUpdate()
+    {
+        while(true)
+        {
+
+            TimeKeeping::updateServerTime();
+        
+            for (auto it = playerTracker.begin() ;
+            it!=playerTracker.end(); ++it)
+            {
+                it->second.update();
+            }
+        }
+    }
+
+    void startPlayerUpdateThread()
+    {
+        playerUpdateThread = thread(&CommandHander::playerUpdate,
+        this);
+
+    }
+
     void clientActionRequestHandler(string message)
     {
         Logger::TRACE("commandResponse clientActionRequestHandler(string message) %p", this);
@@ -43,18 +69,18 @@ class CommandHander
             cout << "performing login" << endl;
             //if new player, create player
             // return zone info and player stats
-            if (zone->players.count(name) == 0)
+            if (playerTracker.count(name) == 0)
             {
-                zone->players[name] = new Player(name);
-                zone->players[name]->clientInterface = this->clientInterface;
+                playerTracker[name] = Player(name);
+                playerTracker[name].clientInterface = this->clientInterface;
             }
             cmdResponse.name = name;
             json j;
             j["action"] = "LOGIN";
             j["response"] = "SUCCESS";
-            j["zone"] = zone->to_json();
+            j["zone"] = playerTracker[name].currentZone.to_json();
             Logger::TRACE("zone added to cmd response");
-            j["player"] =  zone->players[name]->to_json();
+            j["player"] =  playerTracker[name].to_json();
             Logger::TRACE("player added to cmd response");
             cmdResponse.data = j;
             clientInterface->clientActionResponse(cmdResponse);
@@ -62,7 +88,7 @@ class CommandHander
         }
 
 
-        if (zone->players.count(name) == 0)
+        if (playerTracker.count(name) == 0)
         {
             cmdResponse.name = name;
             //cmdResponse.data = "UNKNOWN_PLAYER";
@@ -75,15 +101,18 @@ class CommandHander
         {
             if(action == "SET_ENTITY_TARGET")
             {
-                string entTarget;
+                int entTarget;
                 input >> entTarget;
-                if(zone->entities.count(entTarget) != 0)
+                if(playerTracker[name].currentZone.entities.count(entTarget) != 0)
                 {
                     json j;
                     j["action"] = action;
                     j["result"] = "SUCCESS";
-                    j["entity"] = "";// TODO //zone->entities[entTarget]->to_json();
+                    
+                    // TODO //zone->entities[entTarget]->to_json();
                     //zone->players[name]->setEntityTarget(zone->entities[entTarget]);
+                    playerTracker[name].setEntityTarget(entTarget);
+                    j["entity"] = playerTracker[name].entityTarget->to_json();
                     cmdResponse.data = j;
                     clientInterface->clientActionResponse(cmdResponse);
                 }
@@ -91,7 +120,7 @@ class CommandHander
             if(action == "PERFORM_ENTITY_ACTION")
             {
                 json j;
-                if(zone->players[name]->startEntityAction())
+                if(playerTracker[name].startEntityAction())
                 {
                     j["PERFORM_ENTITY_ACTION"] = "SUCCESS";
                 }
@@ -100,6 +129,10 @@ class CommandHander
                 }
                 cmdResponse.data = j;
                 clientInterface->clientActionResponse(cmdResponse);
+            }
+            if(action == "EXPLORE_ZONE")
+            {
+                playerTracker[name].startExploreZone();
             }
 
 

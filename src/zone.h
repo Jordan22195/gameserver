@@ -33,7 +33,7 @@ class Zone
     string name;
 
     //unique id, count
-    map<string, int> entities;
+    map<int, int> entities;
     dropTable entitySpawnTable;
     map<string, Player*> players;
     static long long lastServerUpdate;

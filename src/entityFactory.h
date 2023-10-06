@@ -12,7 +12,8 @@ enum entityIdEnum
 
 class EntityFactory
 {
-    Entity * createEntity(entityIdEnum id)
+    public:
+    static Entity * createEntity(entityIdEnum id)
     {
         switch(id)
         {

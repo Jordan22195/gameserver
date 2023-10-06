@@ -14,6 +14,7 @@
 #include "skill.h"
 #include "websocketInterface.h"
 #include "json.hpp"
+#include "zone.h"
 
 using json = nlohmann::json;
 
@@ -32,17 +33,22 @@ class Player
     Entity * entityTarget;
     Inventory bag;
 
+    Zone currentZone;
+
     thread actionThread;
 
     bool performingAction = false;
+    bool exploring = false;
     bool stopAction = false;
     int actionCounter;
 long long nextActionTime = -1; // numeric_limits<long long>::max();;
 
 
     Player();
-    void setEntityTarget(string entityId);
+    void setEntityTarget(int entityId);
     Skill * getActiveSkill();
+    void startExploreZone();
+    void doExploreZone();
     void stopEntityAction();
     bool startEntityAction();
     double calcHitChance();

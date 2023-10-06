@@ -34,7 +34,6 @@ int main()
 
     CommandHander commandHandler;
     commandHandler.clientInterface = &clientInterface;
-    commandHandler.zone = &zone;
 
 
   //  DBInterface::go();
@@ -52,16 +51,22 @@ int main()
    //                                  attributeKey,
    //                                  attributeValue, clientconfig);
 
+   commandHandler.startPlayerUpdateThread();
+
     while(true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds((50)));
 
         string clientRequest =  clientInterface.recieveServerMessage();
-        if(clientRequest == "") continue;
+        if(clientRequest != "")
+        {
+            commandHandler.clientActionRequestHandler(clientRequest);
+        }
 
-        commandHandler.clientActionRequestHandler(clientRequest);
+        
+        
 
-
+        Logger::TRACE("step");
 
     }
     return 0;
