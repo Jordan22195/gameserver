@@ -15,17 +15,18 @@ WebsocketInterface::WebsocketInterface()
     string testName = "aaaa";
     string testData = "bbbbb";
 
-    sendServerMessage(testName, testData);
+    sendServerMessage(testName, "TEST", testData);
 
 }
 
 
-void WebsocketInterface::sendServerMessage(string playerName, json data)
+void WebsocketInterface::sendServerMessage(string playerName, string type, json data)
 {
     Logger::TRACE("websocketInterface::sendServerMessage(json playerName, json data) %p", this);
     lock_guard<std::mutex> lock(TxMtx);
     json j;
     j["clientName"] = playerName;
+    j["type"] = type;
     j["data"] = data;
     string packet = j.dump();
     Logger::INFO("Sent Packet: %s", packet.c_str());
@@ -44,10 +45,16 @@ string WebsocketInterface::recieveServerMessage()
 
 }
 
+void WebsocketInterface::clientMessage(ClientMessage message)
+{
+    sendServerMessage(message.playerName, message.packetType, message.data);
+}
+
 void WebsocketInterface::clientActionResponse(commandResponse resp)
 {
     Logger::TRACE(" WebsocketInterface::clientActionResponse(commandResponse resp) %p", this);
 
-    sendServerMessage(resp.name, resp.data);
+    string type = "COMMAND_RESPONSE";
+    sendServerMessage(resp.name, type, resp.data);
 }
 

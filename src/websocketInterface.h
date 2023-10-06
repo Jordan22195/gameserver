@@ -10,6 +10,13 @@ using json = nlohmann::json;
 
 using namespace std;
 
+struct ClientMessage{
+    string playerName;
+    string packetType;
+    json data;
+
+};
+
 struct commandResponse
 {
     string name;
@@ -27,7 +34,8 @@ class WebsocketInterface
     udpSocket *rxSocket = nullptr;
     void clientActionRequestHandler(string message);
     void clientActionResponse(commandResponse resp);
-    void sendServerMessage(string playerName, json data);
+    void clientMessage(ClientMessage message);
+    void sendServerMessage(string playerName,string type, json data);
     string recieveServerMessage();
 
     private:

@@ -79,8 +79,12 @@ class CommandHander
                 input >> entTarget;
                 if(zone->entities.count(entTarget) != 0)
                 {
+                    json j;
+                    j["action"] = action;
+                    j["result"] = "SUCCESS";
+                    j["entity"] = zone->entities[entTarget]->to_json();
                     zone->players[name]->setEntityTarget(zone->entities[entTarget]);
-                    cmdResponse.data = "SET_ENTITY_TARGET\n" + entTarget + "\nSUCCESS";
+                    cmdResponse.data = j;
                     clientInterface->clientActionResponse(cmdResponse);
                 }
             } 

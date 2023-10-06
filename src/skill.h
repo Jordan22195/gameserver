@@ -80,6 +80,7 @@ class Skill
         json j;
         j["name"] = name;
         j["level"] = level;
+        j["xp"] = xp;
         j["actionInterval"] = actionInterval;
 
         return j;

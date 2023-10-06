@@ -145,7 +145,31 @@ void Player::getStatus()
 void Player::reportActionResults(ActionResult res)
 {
     json j;
+    ClientMessage entMessage;
 
-    clientInterface->sendServerMessage(name, res.to_json());
+    if (entityTarget) 
+    {
+        entMessage.playerName = name;
+        entMessage.packetType = "ENTITY";
+        entMessage.data = entityTarget->to_json();
+        clientInterface->clientMessage(entMessage);
+
+    }
+
+    ClientMessage resMessage;
+    resMessage.playerName = name;
+    resMessage.packetType = "ACTION_RESULT";
+    resMessage.data = res.to_json();
+
+
+    ClientMessage pMessage;
+    pMessage.playerName = name;
+    pMessage.packetType = "PLAYER";
+    pMessage.data = to_json();
+    clientInterface->clientMessage(pMessage);
+
+
+
+    clientInterface->clientMessage(resMessage);
 
 }

@@ -73,8 +73,8 @@ class Zone1 : public Zone{
         name = "Tutorial Island";
         auto * tr = new Tree("tree1");
         auto * g = new Goblin("goblin1");
-        entities[tr->name] = tr;
-        entities[g->name] = g;
+        entities[tr->entId] = tr;
+        entities[g->entId] = g;
         t = thread(&Zone1::respawnEntites, this);
     }
 
