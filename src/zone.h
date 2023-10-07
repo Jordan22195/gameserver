@@ -56,6 +56,7 @@ class Zone
         {
             json entEntry;
             entEntry["id"]=e.first;
+            entEntry["name"]=EntityFactory::getEntityNameFromId((entityIdEnum)e.first);
             entEntry["count"]=e.second;
             entityArray.push_back(entEntry);
         }

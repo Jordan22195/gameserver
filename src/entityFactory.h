@@ -22,6 +22,19 @@ class EntityFactory
 
         }
     }
+
+    static string getEntityNameFromId(entityIdEnum id )
+    {
+        auto e = createEntity(id);
+        
+        if (e)
+        {
+            return e->name;
+        }
+        //what happen to the object e is pointing at when this function returns?
+        // todo destruct entity object
+        return "";
+    }
 };
 
 #endif
