@@ -17,14 +17,13 @@
 #include "websocketInterface.h"
 #include "json.hpp"
 #include "dropTable.h"
-#include "entityFactory.h"
+
 
 using json = nlohmann::json;
 
 using namespace std;
 
 class Player;
-class Entity;
 
 class Zone
 {   
@@ -35,7 +34,7 @@ class Zone
     //unique id, count
     map<int, int> entities;
     dropTable entitySpawnTable;
-    map<string, Player*> players;
+   // map<string, Player*> players;
     static long long lastServerUpdate;
     void respawnEntites();
     void playerActions();
@@ -44,27 +43,8 @@ class Zone
     void createNewPlayer(string name);
 
     void explore();
+    virtual json to_json();
 
-    virtual json to_json()
-    {
-        Logger::TRACE(" virtual string Zone::packetify() %p", this);
-
-        json j;
-        j["name"] = name;
-        json entityArray = json::array();
-        for (auto e : entities)
-        {
-            json entEntry;
-            entEntry["id"]=e.first;
-            entEntry["name"]=EntityFactory::getEntityNameFromId((entityIdEnum)e.first);
-            entEntry["count"]=e.second;
-            entityArray.push_back(entEntry);
-        }
-        j["entities"] = entityArray;
-
-        return j;
-       
-    }
     
 
 };
@@ -73,16 +53,7 @@ class Zone
 
 class Zone1 : public Zone{
     public:
-
-
-    thread t;
-    Zone1()
-    {
-        printf("zone created\n");
-        name = "Tutorial Island";
-        entitySpawnTable.addEntry(COMBAT_GOBLIN_NORMAL_1, .5, 1);
-    }
-
+    Zone1();
 
 };
 

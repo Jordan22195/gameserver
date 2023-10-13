@@ -20,7 +20,7 @@ enum SKILL_TYPE
     WOODCUTTING,
     ATTACK,
     HITPOINTS,
-    DEFENCE,
+    DEFENSE,
     RANGED,
     FLETCHING
 };
@@ -56,7 +56,8 @@ class Skill
     string name;
     int xp;
     int level;
-    double actionInterval = 1000;
+    // in game ticks
+    double actionInterval = 10;
     SKILL_TYPE type;
 
     void addXp(int newXp)
@@ -87,7 +88,6 @@ class Skill
     }
 };
 
-
 class WoodCuttingSkill : public Skill
 {
     public:
@@ -96,7 +96,7 @@ class WoodCuttingSkill : public Skill
         name = "Woodcutting";
         xp = 0;
         level = 1;
-        actionInterval = 400;
+        actionInterval = 5;
         type = WOODCUTTING;
     }
 };
@@ -113,10 +113,34 @@ class AttackSkill : public Skill
     }
 };
 
+class DefenseSkill : public Skill
+{
+    public:
+    DefenseSkill(string playerId) : Skill(playerId)
+    {
+        name = "Defense";
+        xp = 0;
+        level = 1;
+        type = DEFENSE;
+    }
+};
+
+class HitPointsSkill : public Skill
+{
+    public:
+    HitPointsSkill(string playerId) : Skill(playerId)
+    {
+        name = "Hit Points";
+        xp = 0;
+        level = 1;
+        type = HITPOINTS;
+    }
+};
+
 
 class FletchingSkill : public Skill
 {
-
+    public:
     FletchingSkill(string playerId) : Skill(playerId)
     {
         name = "Fletching";

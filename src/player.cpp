@@ -20,7 +20,12 @@ Player::Player(string playerId)
     name = playerId;
     skills[WOODCUTTING] = new WoodCuttingSkill(playerId);
     skills[ATTACK] = new AttackSkill(playerId);
-    currentZone = Zone1();
+    skills[HITPOINTS] = new WoodCuttingSkill(playerId);
+    skills[DEFENSE] = new DefenseSkill(playerId);
+    skills[HITPOINTS] = new HitPointsSkill(playerId);
+    skills[FLETCHING] = new FletchingSkill(playerId);
+
+    currentZone = new Zone1();
  
 }
 
@@ -31,7 +36,7 @@ void Player::setEntityTarget(int id)
     Logger::TRACE("Player::setEntityTarget(Entity * entityRef) %p", this);
     stopEntityAction();
     entityTarget = EntityFactory::createEntity((entityIdEnum)id);
-    entityTarget->count = currentZone.entities[id];
+    entityTarget->count = currentZone->entities[id];
 }
 
 Skill * Player::getActiveSkill()
@@ -54,20 +59,20 @@ void Player::startExploreZone()
     stopEntityAction();
     actionCounter = 0;
 
-    nextActionTime = TimeKeeping::lastServerTime + 2000;
+    nextActionTime = TimeKeeping::getServerTime() + 20;
 }
 
 void Player::doExploreZone()
 {
     Logger::TRACE("doExploreZone");
-    if (exploring && (TimeKeeping::lastServerTime >= nextActionTime))
+    if (exploring && (TimeKeeping::getServerTime() >= nextActionTime))
     {
-        nextActionTime = TimeKeeping::lastServerTime + 500;
-        currentZone.explore();
+        nextActionTime = TimeKeeping::getServerTime() + 5;
+        currentZone->explore();
         ClientMessage zoneUpdate;
         zoneUpdate.playerName = name;
         zoneUpdate.packetType = "ZONE";
-        zoneUpdate.data = currentZone.to_json();
+        zoneUpdate.data = currentZone->to_json();
         clientInterface->clientMessage(zoneUpdate);
     }
 }
@@ -76,9 +81,7 @@ void Player::stopEntityAction()
 {
     Logger::TRACE("void Player::stopEntityAction() %p", this);
     stopAction = true;
-    if (actionThread.joinable()) {
-        actionThread.join();
-    }
+    performingAction = false;
 }
 
 bool Player::startEntityAction()
@@ -88,8 +91,20 @@ bool Player::startEntityAction()
     if (entityTarget == nullptr) return false;
     actionCounter = 0;
 
-    nextActionTime = TimeKeeping::lastServerTime + getActiveSkill()->actionInterval;
+    nextActionTime = TimeKeeping::getServerTime() + getActiveSkill()->actionInterval;
     return true;
+}
+
+void Player::takeCombatDamage(int damage)
+{
+    currentHealth -= damage;
+
+    ClientMessage resMessage;
+    resMessage.playerName = name;
+    resMessage.packetType = "PLAYER";
+    resMessage.data = this->to_json();
+    clientInterface->clientMessage(resMessage);
+
 }
 
 double Player::calcHitChance()
@@ -139,6 +154,16 @@ void  Player::update()
     Logger::TRACE("update");
     if(performingAction)
     {
+        if(!entityTarget)
+        {
+            stopEntityAction();
+            return;
+        }
+        if(entityTarget->count == 0)
+        {
+            stopEntityAction();
+            return;
+        }
         doEntityAction();
     }
     if(exploring)
@@ -149,12 +174,13 @@ void  Player::update()
     //TODO 
     //update entity count in zone from count in current entity target
 }
+
 void  Player::doEntityAction()
 {
     Logger::TRACE("void  Player::doEntityAction()) %p", this);
     auto skill = getActiveSkill();
     //cout << "time till action " << nextActionTime- TimeKeeping::lastServerTime << endl;
-    if (performingAction && (TimeKeeping::lastServerTime >= nextActionTime))
+    if (performingAction && (TimeKeeping::getServerTime() >= nextActionTime))
     {
 
         if (skill->level >= entityTarget->levelRequirement)
@@ -168,7 +194,7 @@ void  Player::doEntityAction()
                 skills[xp.skillType]->addXp(xp.xpAmount);
             }
             //bag.addItems(res.items);
-            nextActionTime = TimeKeeping::lastServerTime + skill->actionInterval;
+            nextActionTime = TimeKeeping::getServerTime() + skill->actionInterval;
         }
     
     }

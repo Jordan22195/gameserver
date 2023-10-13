@@ -15,6 +15,9 @@ long long Entity::getNextRespawnTime()
     }
 }
 
+void Entity::update()
+{};
+
 void Entity::respawn()
 {
     lock_guard<std::mutex> lock(mtx);

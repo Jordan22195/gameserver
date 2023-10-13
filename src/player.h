@@ -20,7 +20,9 @@ using json = nlohmann::json;
 
 using namespace std;
 
-class Entity;
+
+
+class Zone;
 
 class Player
 {
@@ -30,10 +32,11 @@ class Player
     Player(string playerID);
     string name;
     map<SKILL_TYPE, Skill*> skills;
+    int currentHealth;
     Entity * entityTarget;
     Inventory bag;
 
-    Zone currentZone;
+    Zone * currentZone;
 
     thread actionThread;
 
@@ -49,6 +52,7 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
     Skill * getActiveSkill();
     void startExploreZone();
     void doExploreZone();
+    void takeCombatDamage(int damage);
     void stopEntityAction();
     bool startEntityAction();
     double calcHitChance();
@@ -61,6 +65,11 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
     void reportActionResults(ActionResult res);
     json toJson();
 
+
+    //create group()
+    //consolidate entities targets. share entity target. 
+    //reference to other players. know where they are and stats
+
     virtual json to_json()
     {
 
@@ -69,6 +78,7 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
         json j;
         j["name"] = name;
         json skillsArray = json::array();
+        j["currentHP"] = currentHealth;
          for (auto &s : skills)
         {
             skillsArray.push_back(s.second->to_json());

@@ -2,6 +2,10 @@
 #define COMBAT_ENTITY
 
 #include "entity.h"
+#include "player.h"
+
+class Player;
+class Goblin;
 
 class combatEntity : public Entity
 {
@@ -9,6 +13,15 @@ class combatEntity : public Entity
     int attackLevel;
     int defenseLevel;
     int strengthLevel;
+    int attackInterval; //in number of ticks
+    int nextAttackTime;
+
+    // refernce to the player that created this entity.
+    // In group content this would be consolodated from mutliple
+    // entites to a single entity. This entity would have a list 
+    // of target players. 
+    Player * playerTarget;
+
     combatEntity()
     {
         skillCategory = COMBAT;
@@ -18,13 +31,16 @@ class combatEntity : public Entity
 
     
     ActionResult action(double hitChance, int minHit, int maxHit, SKILL_TYPE skillType) override;//double hitChance, int minHit, int maxHit) override;
-
+    
+    void  update() override;
+    
 
 };
 
 class Goblin : public combatEntity
 {
     public:
+    Goblin(){}
     Goblin(int id )
     {
         entId = id;
@@ -36,6 +52,9 @@ class Goblin : public combatEntity
         health = maxHealth;
         respawnTime = 5000;
         difficulty = 2;
+        attackLevel = 1;
+        attackInterval = 10;
+    
 
         loot.addEntry(0, 1.00, 1, 2);
     }

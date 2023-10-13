@@ -12,7 +12,6 @@
 #include <cstddef>
 
 #include "websocketInterface.h"
-#include "zone.h"
 #include "commandHandler.h"
 #include "logger.h"
 
@@ -25,12 +24,11 @@ int main()
 {
 
     Logger::setLogLevel(Logger::LogLevel::TRACE);
-    Zone1 zone;
+  
     
 
     WebsocketInterface clientInterface;
 
-    zone.clientInterface = &clientInterface;
 
     CommandHander commandHandler;
     commandHandler.clientInterface = &clientInterface;

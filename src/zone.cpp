@@ -1,5 +1,6 @@
 #include "zone.h"
 #include "player.h"
+#include "entityFactory.h"
 
 using namespace std;
 
@@ -22,11 +23,31 @@ void Zone::explore()
     }
     // add id to spawns list
 }
-
-void Zone::playerActions()
-{
-    for (auto const& p : players)
+json Zone::to_json()
     {
-        p.second->update(); // string's value 
+        Logger::TRACE(" virtual string Zone::packetify() %p", this);
+
+        json j;
+        j["name"] = name;
+        json entityArray = json::array();
+        for (auto e : entities)
+        {
+            json entEntry;
+            entEntry["id"]=e.first;
+            entEntry["name"]=EntityFactory::getEntityNameFromId((entityIdEnum)e.first);
+            entEntry["count"]=e.second;
+            entityArray.push_back(entEntry);
+        }
+        j["entities"] = entityArray;
+
+        return j;
+       
     }
-}
+
+
+    Zone1::Zone1()
+    {
+        printf("zone created\n");
+        name = "Tutorial Island";
+        entitySpawnTable.addEntry((int)entityIdEnum::COMBAT_GOBLIN_NORMAL_1, .5, 1);
+    }

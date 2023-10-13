@@ -2,7 +2,7 @@
     
     ActionResult combatEntity::action(double hitChance, int minHit, int maxHit, SKILL_TYPE skill)
     {
-        lock_guard<std::mutex> lock(mtx);
+
         ActionResult r;
         int d = takeDamage(calcDamage(hitChance, minHit, maxHit));
         if ( d > 0)
@@ -17,4 +17,17 @@
             }
         }
         return r;
+    }
+
+
+     void combatEntity::update()
+    {
+
+        //if enough time has elapsed
+        if (nextAttackTime >= TimeKeeping::getServerTime()+attackInterval)
+        {
+            playerTarget->takeCombatDamage(attackLevel);
+            nextAttackTime = TimeKeeping::getServerTime()+attackInterval;
+        }
+        
     }

@@ -23,6 +23,8 @@ using json = nlohmann::json;
 
 using namespace std;
 
+
+
 enum SKILL_CATEGORY
 {
     GATHER,
@@ -92,6 +94,8 @@ class Entity
     queue<long long> respawnTimes;
 
     virtual string getStatus();
+
+    virtual void update();
 
     long long getNextRespawnTime();
     void respawn();

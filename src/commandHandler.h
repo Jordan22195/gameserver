@@ -2,7 +2,7 @@
 #define COMMANDHANDLER
 
 
-#include "zone.h"
+
 #include "player.h"
 #include "websocketInterface.h"
 #include <string>
@@ -26,7 +26,6 @@ class CommandHander
         while(true)
         {
 
-            TimeKeeping::updateServerTime();
         
             for (auto it = playerTracker.begin() ;
             it!=playerTracker.end(); ++it)
@@ -78,7 +77,7 @@ class CommandHander
             json j;
             j["action"] = "LOGIN";
             j["response"] = "SUCCESS";
-            j["zone"] = playerTracker[name].currentZone.to_json();
+            j["zone"] = playerTracker[name].currentZone->to_json();
             Logger::TRACE("zone added to cmd response");
             j["player"] =  playerTracker[name].to_json();
             Logger::TRACE("player added to cmd response");
@@ -103,7 +102,7 @@ class CommandHander
             {
                 int entTarget;
                 input >> entTarget;
-                if(playerTracker[name].currentZone.entities.count(entTarget) != 0)
+                if(playerTracker[name].currentZone->entities.count(entTarget) != 0)
                 {
                     json j;
                     j["action"] = action;
