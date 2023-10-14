@@ -55,6 +55,9 @@ Skill * Player::getActiveSkill()
 
 void Player::startExploreZone()
 {
+
+    Logger::TRACE("startExploreZone");
+
     exploring = true;
     stopEntityAction();
     actionCounter = 0;
@@ -65,7 +68,7 @@ void Player::startExploreZone()
 void Player::doExploreZone()
 {
     Logger::TRACE("doExploreZone");
-    if (exploring && (TimeKeeping::getServerTime() >= nextActionTime))
+    if (exploring &&  (TimeKeeping::getServerTime() >= nextActionTime))
     {
         nextActionTime = TimeKeeping::getServerTime() + 5;
         currentZone->explore();

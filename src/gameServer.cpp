@@ -13,6 +13,7 @@
 
 #include "websocketInterface.h"
 #include "commandHandler.h"
+#include "timeKeeping.h"
 #include "logger.h"
 
 using namespace std;
@@ -48,6 +49,8 @@ int main()
    // DBInterface::updatePlayerItem(tableName, partitionKey, partitionValue,
    //                                  attributeKey,
    //                                  attributeValue, clientconfig);
+
+   TimeKeeping::startUpdateThread();
 
    commandHandler.startPlayerUpdateThread();
 
