@@ -24,6 +24,7 @@ Player::Player(string playerId)
     skills[DEFENSE] = new DefenseSkill(playerId);
     skills[HITPOINTS] = new HitPointsSkill(playerId);
     skills[FLETCHING] = new FletchingSkill(playerId);
+    currentHealth = 1000;
 
     currentZone = new Zone1();
  
@@ -91,6 +92,7 @@ bool Player::startEntityAction()
 {
      Logger::TRACE("void Player::startEntityAction() %p", this);
     performingAction = true;
+    exploring = false;
     if (entityTarget == nullptr) return false;
     actionCounter = 0;
 
