@@ -87,6 +87,7 @@ async def client_handler(websocket, path):
     print(f"Client connected: {path}")
     try:
         async for message in websocket:
+            print(message)
             clientName = get_nth_item(message, 0)
             command = get_nth_item(message, 1)
             if(command == "LOGIN"):

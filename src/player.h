@@ -51,6 +51,7 @@ long long nextActionTime = -1; // numeric_limits<long long>::max();;
     void setEntityTarget(int entityId);
     Skill * getActiveSkill();
     void startExploreZone();
+    void stopExplore();
     void doExploreZone();
     void takeCombatDamage(int damage);
     void stopEntityAction();

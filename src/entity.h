@@ -87,7 +87,7 @@ class Entity
     int count;
     int maxCount;
     SKILL_TYPE skillType;
-    int levelRequirement;
+    int levelRequirement = 0;
     int difficulty;
     SKILL_CATEGORY skillCategory;
 

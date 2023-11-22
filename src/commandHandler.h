@@ -32,6 +32,7 @@ class CommandHander
             {
                 it->second.update();
             }
+            std::this_thread::sleep_for(std::chrono::milliseconds((50)));
         }
     }
 
@@ -73,16 +74,30 @@ class CommandHander
                 playerTracker[name] = Player(name);
                 playerTracker[name].clientInterface = this->clientInterface;
             }
+
+
+
             cmdResponse.name = name;
             json j;
             j["action"] = "LOGIN";
             j["response"] = "SUCCESS";
-            j["zone"] = playerTracker[name].currentZone->to_json();
-            Logger::TRACE("zone added to cmd response");
-            j["player"] =  playerTracker[name].to_json();
-            Logger::TRACE("player added to cmd response");
             cmdResponse.data = j;
             clientInterface->clientActionResponse(cmdResponse);
+
+
+            ClientMessage message;
+            message.playerName = name;
+
+            message.packetType = "PLAYER";
+            message.data = playerTracker[name].to_json();
+            clientInterface->clientMessage(message);
+            
+            message.packetType = "ZONE";
+            message.data = playerTracker[name].currentZone->to_json();
+            clientInterface->clientMessage(message);
+
+      
+            
 
         }
 
@@ -104,16 +119,13 @@ class CommandHander
                 input >> entTarget;
                 if(playerTracker[name].currentZone->entities.count(entTarget) != 0)
                 {
-                    json j;
-                    j["action"] = action;
-                    j["result"] = "SUCCESS";
+                    ClientMessage m;
+                    m.playerName = name;
+                    m.packetType = "ENTITY";
                     
-                    // TODO //zone->entities[entTarget]->to_json();
-                    //zone->players[name]->setEntityTarget(zone->entities[entTarget]);
                     playerTracker[name].setEntityTarget(entTarget);
-                    j["entity"] = playerTracker[name].entityTarget->to_json();
-                    cmdResponse.data = j;
-                    clientInterface->clientActionResponse(cmdResponse);
+                    m.data = playerTracker[name].entityTarget->to_json();
+                    clientInterface->clientMessage(m);
                 }
             } 
             if(action == "PERFORM_ENTITY_ACTION")
@@ -132,6 +144,14 @@ class CommandHander
             if(action == "EXPLORE_ZONE")
             {
                 playerTracker[name].startExploreZone();
+            }
+            if(action == "STOP_EXPLORE")
+            {
+                playerTracker[name].stopExplore();
+            }
+            if(action == "STOP_ENTITY_ACTION")
+            {
+                playerTracker[name].stopEntityAction();
             }
 
 

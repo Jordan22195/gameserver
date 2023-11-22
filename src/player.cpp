@@ -63,7 +63,7 @@ void Player::startExploreZone()
     stopEntityAction();
     actionCounter = 0;
 
-    nextActionTime = TimeKeeping::getServerTime() + 20;
+    nextActionTime = TimeKeeping::getServerTime();
 }
 
 void Player::doExploreZone()
@@ -79,6 +79,11 @@ void Player::doExploreZone()
         zoneUpdate.data = currentZone->to_json();
         clientInterface->clientMessage(zoneUpdate);
     }
+}
+
+void Player::stopExplore()
+{
+    exploring = false;
 }
 
 void Player::stopEntityAction()
@@ -156,7 +161,7 @@ Inventory * Player::getPlayerInventory()
 
 void  Player::update()
 {
-    Logger::TRACE("update");
+   // Logger::TRACE("update");
     if(performingAction)
     {
         if(!entityTarget)
@@ -184,15 +189,17 @@ void  Player::doEntityAction()
 {
     Logger::TRACE("void  Player::doEntityAction()) %p", this);
     auto skill = getActiveSkill();
-    //cout << "time till action " << nextActionTime- TimeKeeping::lastServerTime << endl;
+    Logger::TRACE( "time till action %d",  nextActionTime- TimeKeeping::getServerTime());
     if (performingAction && (TimeKeeping::getServerTime() >= nextActionTime))
     {
-
+        Logger::TRACE("perfoming action");
         if (skill->level >= entityTarget->levelRequirement)
         {   
-        
+            
+            Logger::TRACE("level requirement met");
             actionCounter ++;
             ActionResult res = entityTarget->action(calcHitChance(), calcMinHit(), calcMaxHit(), ATTACK);
+            Logger::TRACE("action exectuted");
             reportActionResults(res);
             for (auto xp : res.xp)
             {
@@ -221,6 +228,7 @@ void Player::getStatus()
 
 void Player::reportActionResults(ActionResult res)
 {
+    Logger::TRACE("Player::reportActionResults()");
     json j;
     ClientMessage entMessage;
 
@@ -237,6 +245,7 @@ void Player::reportActionResults(ActionResult res)
     resMessage.playerName = name;
     resMessage.packetType = "ACTION_RESULT";
     resMessage.data = res.to_json();
+    clientInterface->clientMessage(resMessage);
 
 
     ClientMessage pMessage;
@@ -247,6 +256,5 @@ void Player::reportActionResults(ActionResult res)
 
 
 
-    clientInterface->clientMessage(resMessage);
 
 }

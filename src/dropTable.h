@@ -23,6 +23,8 @@ using namespace std;
         json to_json()
         {
             json j;
+            j["id"] = id;
+            j["count"] = count;
             return j;
         }
 

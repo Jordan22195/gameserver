@@ -38,11 +38,12 @@ vector<rollResult> dropTable::roll()
     vector<rollResult> ret;
     for (entry& e : table)
     {
-        if(getRandomDouble(0.0, 1.0) < e.dropChance)
+        if(getRandomDouble(0.0, 1.0) <= e.dropChance)
         {
             rollResult r;
             r.id = e.id;
             r.count = getRandomInt(e.quantityMin, e.quantityMax);
+            Logger::INFO("Generated loot: %d x%d", r.id, r.count);
             ret.push_back(r);
 
         }

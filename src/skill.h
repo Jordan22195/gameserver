@@ -55,9 +55,9 @@ class Skill
     };
     string name;
     int xp;
-    int level;
+    int level = 1;
     // in game ticks
-    double actionInterval = 10;
+    double actionInterval = 5;
     SKILL_TYPE type;
 
     void addXp(int newXp)

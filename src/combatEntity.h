@@ -54,6 +54,7 @@ class Goblin : public combatEntity
         difficulty = 2;
         attackLevel = 1;
         attackInterval = 10;
+        xpValue = 1;
     
 
         loot.addEntry(0, 1.00, 1, 2);
