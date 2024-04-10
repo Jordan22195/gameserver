@@ -50,4 +50,5 @@ json Zone::to_json()
         printf("zone created\n");
         name = "Tutorial Island";
         entitySpawnTable.addEntry((int)entityIdEnum::COMBAT_GOBLIN_NORMAL_1, .5, 1);
+        entitySpawnTable.addEntry((int)entityIdEnum::WOODCUTTING_OAK, .5, 1);
     }

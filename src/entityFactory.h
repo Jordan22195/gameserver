@@ -11,7 +11,8 @@
 
 enum class entityIdEnum
 {
-    COMBAT_GOBLIN_NORMAL_1
+    COMBAT_GOBLIN_NORMAL_1,
+    WOODCUTTING_OAK
 };
 
 
@@ -61,6 +62,9 @@ class EntityFactory
         {
             case entityIdEnum::COMBAT_GOBLIN_NORMAL_1:
                 ret = new Goblin((int) id);
+                break;
+            case entityIdEnum::WOODCUTTING_OAK:
+                ret = new OakTree((int)id);
                 break;
 
         }

@@ -10,7 +10,11 @@ using json = nlohmann::json;
 using namespace std;
 
 
-
+enum class ItemIdEnum
+{
+    ITEM_COINS = 1000000,
+    ITEMS_OAKLOGS,
+};
 
 class  Item
 {

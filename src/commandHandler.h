@@ -96,6 +96,8 @@ class CommandHander
             message.data = playerTracker[name].currentZone->to_json();
             clientInterface->clientMessage(message);
 
+            playerTracker[name].reportZoneStatusToClient();
+
       
             
 

@@ -5,10 +5,12 @@
 #include <chrono>
 #include <thread>
 #include <string>
+#include <vector>
 
 #include "inventory.h"
 #include "databaseInterface.h"
 #include "logger.h"
+#include "skillUpgrade.h"
 #include "json.hpp"
 
 using json = nlohmann::json;
@@ -17,6 +19,7 @@ using namespace std;
 
 enum SKILL_TYPE
 {
+    EXPLORATION,
     WOODCUTTING,
     ATTACK,
     HITPOINTS,
@@ -56,10 +59,17 @@ class Skill
     string name;
     int xp;
     int level = 1;
-    // in game ticks
-    double actionInterval = 5;
-    SKILL_TYPE type;
 
+    // in game ticks
+    double baseActionInterval = 10;
+    // fastest 
+    double maxActionInterval = 5;
+
+    // number of game ticks to speed up per game tick
+    double actionIntervalAcceleration = 1;
+
+    SKILL_TYPE type;
+   // vector<SkillUpgrade> upgrades;
     void addXp(int newXp)
     {
         this->xp += newXp;
@@ -76,15 +86,44 @@ class Skill
         cout << name << " level up! New Level is " << level << endl;
     }
 
+    int effectiveLevel()
+    {
+        float linear = 1.0;
+        float exp = 1;
+
+       // for (auto &upgrade : upgrades)
+       // {
+      //      linear += upgrade.additiveSkillAdjustnmentPerLevel;
+      //      exp *= upgrade.multiplicitiveSkillAdjustnmentPerLevel;
+      //  }
+        return level * linear * exp;
+    }
+
+
     json to_json()
     {
         json j;
         j["name"] = name;
         j["level"] = level;
+        j["effectiveLevel"] = effectiveLevel();
         j["xp"] = xp;
-        j["actionInterval"] = actionInterval;
+        j["baseActionInterval"] = baseActionInterval;
+        j["maxActionInterval"] = maxActionInterval;
+        j["actionIntervalAcceleration"] = actionIntervalAcceleration;
 
         return j;
+    }
+};
+
+class ExplorationSkill : public Skill
+{
+    public:
+    ExplorationSkill(string playerId) : Skill(playerId)
+    {
+        name = "Exploration";
+        xp = 0;
+        level = 1;
+        type = EXPLORATION;
     }
 };
 
@@ -96,7 +135,6 @@ class WoodCuttingSkill : public Skill
         name = "Woodcutting";
         xp = 0;
         level = 1;
-        actionInterval = 5;
         type = WOODCUTTING;
     }
 };

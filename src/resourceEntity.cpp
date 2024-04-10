@@ -1,5 +1,6 @@
 #include "resourceEntity.h"
 
+    //return xp and item on successful action
     ActionResult ResourceEntity::action(double hitChance, int minHit, int maxHit)
     {
         lock_guard<std::mutex> lock(mtx);

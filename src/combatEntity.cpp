@@ -1,6 +1,9 @@
     #include "combatEntity.h"
     
-    ActionResult combatEntity::action(double hitChance, int minHit, int maxHit, SKILL_TYPE skill)
+
+    //return xp on successful action
+    //return item on death
+    ActionResult combatEntity::action(double hitChance, int minHit, int maxHit)
     {
         Logger::TRACE("combatEntity::action()");
         ActionResult r;
@@ -8,7 +11,7 @@
         if ( d > 0)
         {
             skillXP xp;
-            xp.skillType = skill;
+            xp.skillType = this->skillType;
             xp.xpAmount = xpValue * d;
             
             r.xp.push_back(xp);

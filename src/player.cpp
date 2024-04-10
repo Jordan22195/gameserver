@@ -18,6 +18,7 @@ Player::Player(string playerId)
 {
     Logger::TRACE("Player::Player(string playerId) %p", this);
     name = playerId;
+    skills[EXPLORATION] = new ExplorationSkill(playerId);
     skills[WOODCUTTING] = new WoodCuttingSkill(playerId);
     skills[ATTACK] = new AttackSkill(playerId);
     skills[HITPOINTS] = new WoodCuttingSkill(playerId);
@@ -66,18 +67,33 @@ void Player::startExploreZone()
     nextActionTime = TimeKeeping::getServerTime();
 }
 
-void Player::doExploreZone()
+void Player::reportZoneStatusToClient()
 {
-    Logger::TRACE("doExploreZone");
-    if (exploring &&  (TimeKeeping::getServerTime() >= nextActionTime))
-    {
-        nextActionTime = TimeKeeping::getServerTime() + 5;
-        currentZone->explore();
         ClientMessage zoneUpdate;
         zoneUpdate.playerName = name;
         zoneUpdate.packetType = "ZONE";
         zoneUpdate.data = currentZone->to_json();
         clientInterface->clientMessage(zoneUpdate);
+}
+
+void Player::doExploreZone()
+{
+    Logger::TRACE("doExploreZone");
+    if (exploring &&  (TimeKeeping::getServerTime() >= nextActionTime))
+    {
+
+        auto exploreSkill = skills[EXPLORATION];
+
+        int nextActionInterval = exploreSkill->baseActionInterval - (actionCounter * exploreSkill->actionIntervalAcceleration);
+        if (nextActionInterval < exploreSkill->maxActionInterval)
+        {
+            nextActionInterval =  exploreSkill->maxActionInterval;
+        }
+
+        nextActionTime = TimeKeeping::getServerTime() + nextActionInterval;
+
+        currentZone->explore();
+        reportZoneStatusToClient();
     }
 }
 
@@ -101,7 +117,7 @@ bool Player::startEntityAction()
     if (entityTarget == nullptr) return false;
     actionCounter = 0;
 
-    nextActionTime = TimeKeeping::getServerTime() + getActiveSkill()->actionInterval;
+    nextActionTime = TimeKeeping::getServerTime() + getActiveSkill()->baseActionInterval;
     return true;
 }
 
@@ -141,14 +157,8 @@ int Player::calcMaxHit()
     auto skill = getActiveSkill();
     if (skill != nullptr)
     {
-        if (skill->type != ATTACK)
-        {
-            return 1;
-        }
-        else
-        {
-            return skills[ATTACK]->level;
-        }
+        return skills[skill->type]->level;
+       
     }
     return 0;
 }
@@ -198,7 +208,7 @@ void  Player::doEntityAction()
             
             Logger::TRACE("level requirement met");
             actionCounter ++;
-            ActionResult res = entityTarget->action(calcHitChance(), calcMinHit(), calcMaxHit(), ATTACK);
+            ActionResult res = entityTarget->action(calcHitChance(), calcMinHit(), calcMaxHit());
             Logger::TRACE("action exectuted");
             reportActionResults(res);
             for (auto xp : res.xp)
@@ -206,7 +216,14 @@ void  Player::doEntityAction()
                 skills[xp.skillType]->addXp(xp.xpAmount);
             }
             //bag.addItems(res.items);
-            nextActionTime = TimeKeeping::getServerTime() + skill->actionInterval;
+
+            int nextActionInterval = skill->baseActionInterval - (actionCounter * skill->actionIntervalAcceleration);
+            if (nextActionInterval < skill->maxActionInterval)
+            {
+                nextActionInterval =  skill->maxActionInterval;
+            }
+
+            nextActionTime = TimeKeeping::getServerTime() + nextActionInterval;
         }
     
     }

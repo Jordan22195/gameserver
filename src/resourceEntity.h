@@ -41,4 +41,32 @@ class Tree : public ResourceEntity
 
 };
 
+class OakTree : public ResourceEntity
+{
+    public:
+    OakTree(int id)
+    {
+        entId = id;
+        count = 1;
+        maxCount = 1;
+        skillType = WOODCUTTING;
+        levelRequirement = 1;
+        name = "Oak Tree";
+        maxHealth = 10;
+        health = maxHealth;
+        respawnTime = 5000;
+        difficulty = 2;
+        xpValue = 5;
+
+        printf("entity %s created\n", name.c_str());
+
+        loot.addEntry((int)ItemIdEnum::ITEMS_OAKLOGS, 1.00, 1, 2);
+
+
+    }
+
+
+
+};
+
 #endif

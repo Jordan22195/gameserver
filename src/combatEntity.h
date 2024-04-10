@@ -30,7 +30,7 @@ class combatEntity : public Entity
     }
 
     
-    ActionResult action(double hitChance, int minHit, int maxHit, SKILL_TYPE skillType) override;//double hitChance, int minHit, int maxHit) override;
+    ActionResult action(double hitChance, int minHit, int maxHit) override;//double hitChance, int minHit, int maxHit) override;
     
     void  update() override;
     
@@ -57,7 +57,7 @@ class Goblin : public combatEntity
         xpValue = 1;
     
 
-        loot.addEntry(0, 1.00, 1, 2);
+        loot.addEntry((int) ItemIdEnum::ITEM_COINS, 1.00, 1, 2);
     }
 };
 
