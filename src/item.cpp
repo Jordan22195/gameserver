@@ -6,6 +6,7 @@ json Item::to_json()
 {
     Logger::TRACE("Item::to_json()");
     json j;
+    j["id"] = (int)id;
     j["name"] = name;
     j["description"] = description;
     j["quantity"] = quantity;

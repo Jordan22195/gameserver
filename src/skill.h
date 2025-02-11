@@ -59,6 +59,7 @@ class Skill
     string name;
     int xp;
     int level = 1;
+    vector<SkillUpgrade> upgrades;
 
     // in game ticks
     double baseActionInterval = 10;
@@ -110,6 +111,12 @@ class Skill
         j["baseActionInterval"] = baseActionInterval;
         j["maxActionInterval"] = maxActionInterval;
         j["actionIntervalAcceleration"] = actionIntervalAcceleration;
+        json upgradesArray = json::array();
+        for (auto &s : upgrades)
+        {
+            upgradesArray.push_back(s.to_json());
+        } 
+        j["upgrades"] = upgradesArray;
 
         return j;
     }
@@ -148,6 +155,12 @@ class AttackSkill : public Skill
         xp = 0;
         level = 1;
         type = ATTACK;
+
+        //                          name                type     lvlreq,     maxLvl, costBase,   cLin,   cExp,   mBase,  mLin,   mExp
+        SkillUpgrade testUpgrades( "A little Stronger", POWER,     1,          5,      1,          10,     0,      0,      1,      0);
+        upgrades.push_back(testUpgrades);
+
+
     }
 };
 

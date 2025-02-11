@@ -51,7 +51,7 @@ struct skillXP
 struct ActionResult
 {
     vector<skillXP> xp;
-    vector<rollResult> items;
+    vector<Item> items;
 
     json to_json()
     {

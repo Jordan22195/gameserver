@@ -12,7 +12,11 @@
             xpres.skillType = this->skillType;
             xpres.xpAmount = xpValue;
             r.xp.push_back(xpres);
-            r.items = loot.roll();
+            auto rollResults = loot.roll();
+            for (auto i : rollResults)
+            {
+                r.items.push_back( ItemFactory::createItem(i.id,i.count));
+            }
         }
         return r;
     }

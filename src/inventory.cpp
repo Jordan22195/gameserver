@@ -3,17 +3,33 @@
 
 using namespace std;
 
-void Inventory::addItems(vector<Item> stuff) {
+
+void Inventory::addItems(vector<rollResult> stuff) 
+{
     for ( auto&  i : stuff)
     {
-        if(items.count(i.getName()) == 0)
-        {
-            items[i.getName()] = i;
-        }
-        else
-        {
-            items[i.getName()].quantity += i.quantity;
-        }
+        addItem(ItemFactory::createItem(i.id,i.count));
+    }
+}
+
+
+void Inventory::addItems(vector<Item> stuff) 
+{
+    for ( auto&  i : stuff)
+    {
+        addItem(i);
+    }
+}
+
+void Inventory::addItem(Item i)
+{
+    if(items.count(i.getName()) == 0)
+    {
+        items[i.getName()] = i;
+    }
+    else
+    {
+        items[i.getName()].quantity += i.quantity;
     }
 }
 
@@ -63,7 +79,7 @@ json Inventory::to_json()
     {
         Logger::TRACE("json-ifie next item");
         json j = it->second.to_json();
-        //itemArray.push_back(j.dump());
+        itemArray.push_back(j);
     }
     Logger::TRACE("end of items");
     j["items"] = itemArray;

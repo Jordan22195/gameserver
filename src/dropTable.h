@@ -15,20 +15,20 @@
 #include "skill.h"
 using namespace std;
 
-    struct rollResult
+struct rollResult
+{
+    int id;
+    int count;
+
+    json to_json()
     {
-        int id;
-        int count;
+        json j;
+        j["id"] = id;
+        j["count"] = count;
+        return j;
+    }
 
-        json to_json()
-        {
-            json j;
-            j["id"] = id;
-            j["count"] = count;
-            return j;
-        }
-
-    };
+};
 
 class dropTable
 {

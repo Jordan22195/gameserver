@@ -133,6 +133,7 @@ void Player::takeCombatDamage(int damage)
 
 }
 
+//player level as a percentage of target difficulty
 double Player::calcHitChance()
 {
     Logger::TRACE("double Player::calcHitChance() %p", this);
@@ -143,6 +144,8 @@ double Player::calcHitChance()
     }
     return 0.0;
 }
+
+// revisit this - I think just does 0 or max hit at the moment
 int Player::calcMinHit()
 {
     Logger::TRACE("int Player::calcMinHit() %p", this);
@@ -151,6 +154,8 @@ int Player::calcMinHit()
     if (minHit < maxHit) return minHit;
     else return maxHit;
 }
+
+//equal to level
 int Player::calcMaxHit()
 {
     Logger::TRACE("int Player::calcMaxHit() %p", this);
@@ -215,7 +220,7 @@ void  Player::doEntityAction()
             {
                 skills[xp.skillType]->addXp(xp.xpAmount);
             }
-            //bag.addItems(res.items);
+            bag.addItems(res.items);
 
             int nextActionInterval = skill->baseActionInterval - (actionCounter * skill->actionIntervalAcceleration);
             if (nextActionInterval < skill->maxActionInterval)

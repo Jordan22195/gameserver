@@ -31,7 +31,11 @@
         }
         ActionResult r;
         //r.xp = xpValue;
-        r.items = loot.roll();
+        auto rollResults = loot.roll();
+        for (auto i : rollResults)
+        {
+            r.items.push_back( ItemFactory::createItem(i.id,i.count));
+        }
         
     }
 
